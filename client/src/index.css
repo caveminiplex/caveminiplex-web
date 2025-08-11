@@ -1,7 +1,28 @@
 @import "tailwindcss";
-
+@import "react-slideshow-image/dist/styles.css";
 
 body {
   margin: 0;
   padding: 0;
+  background: #ffffff;
+  background: linear-gradient(
+    298deg,
+    rgba(255, 255, 255, 1) 26%,
+    rgba(227, 190, 239, 0.97) 88%
+  );
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.custom-scrollbar::--webkit-scrollbar-track {
+  background-color: rgb(159, 69, 243);
+}
+
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgb(170, 157, 244);
+    border-radius: 20px;
 }
