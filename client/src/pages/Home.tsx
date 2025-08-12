@@ -3,20 +3,21 @@ import MovieCard from "../components/MovieCard";
 import Footer from "../components/Footer";
 import Lottie from "lottie-react";
 import movieTheatreLottie from "../assets/lottie/movieTheatre.json";
+import { useNavigate } from "react-router-dom";
 
 const Slideshow = () => {
   const slides = [
     {
       url: "https://musewithmeblog.com/wp-content/uploads/2018/05/infinitywarfeatured.jpg",
-      title: "Avengers: Infinity War"
+      title: "Avengers: Infinity War",
     },
     {
       url: "https://i0.wp.com/conciliarpost.com/wp-content/uploads/2014/09/breaking_bad_fb_banner_by_cartoonperson-d5628z3.png?fit=851%2C314&ssl=1",
-      title: "Breaking Bad"
+      title: "Breaking Bad",
     },
     {
       url: "https://w0.peakpx.com/wallpaper/380/356/HD-wallpaper-pk-movie-motion-poster.jpg",
-      title: "PK"
+      title: "PK",
     },
   ];
 
@@ -31,7 +32,7 @@ const Slideshow = () => {
             ></div>
 
             <div className="absolute bottom-4 right-4 z-20 px-11 py-8">
-                <h3 className="text-7xl text-white font-bold">{slide.title}</h3>
+              <h3 className="text-7xl text-white font-bold">{slide.title}</h3>
             </div>
           </div>
         ))}
@@ -41,6 +42,8 @@ const Slideshow = () => {
 };
 
 const Home = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="w-full h-full overflow-y-scroll custom-scrollbar">
       <div className="relative h-[500px] w-full">
@@ -53,11 +56,16 @@ const Home = () => {
             </p>
 
             <div className="flex space-x-4">
-              <button className="px-14 py-2 rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white text-lg focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200">
+              <button
+                onClick={() => {
+                  navigate("/book");
+                }}
+                className="px-14 py-2 rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white text-lg focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200 cursor-pointer"
+              >
                 Book now
               </button>
 
-              <button className="px-14 py-2 rounded-lg border-2 border-black text-black font-medium hover:shadow-xl transition duration-200">
+              <button className="px-14 py-2 rounded-lg border-2 border-black text-black font-medium hover:shadow-xl transition duration-200 cursor-pointer">
                 View Movies
               </button>
             </div>
@@ -70,14 +78,16 @@ const Home = () => {
 
         <div className="pt-8 pb-3 w-full overflow-x-scroll custom-scrollbar">
           <div className=" flex items-center space-x-7">
-            <MovieCard />
-            <MovieCard />
-            <MovieCard />
-            <MovieCard />
-            <MovieCard />
-            <MovieCard />
-            <MovieCard />
-            <MovieCard />
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((value) => (
+              <div
+                key={value}
+                onClick={() => {
+                  navigate("/book");
+                }}
+              >
+                <MovieCard />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -116,9 +126,7 @@ const Home = () => {
       </section>
 
       {/* Book tickets now footer banner */}
-      <section className="w-full h-60 mt-20 bg-gradient-to-b from-transparent to-blue-300">
-
-      </section>
+      <section className="w-full h-60 mt-20 bg-gradient-to-b from-transparent to-blue-300"></section>
       <Footer />
     </div>
   );
