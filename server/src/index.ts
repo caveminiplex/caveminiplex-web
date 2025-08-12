@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors"
 import dotenv from "dotenv";
+import v1Routes from "./routes/v1/index"
 
 dotenv.config()
 
@@ -12,9 +13,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors())
 
 
-app.get("/", (req, res) => {
-    res.json({message:"It is working"})
-})
+app.use("/api/v1", v1Routes);
 
 
 app.listen(PORT, () => {

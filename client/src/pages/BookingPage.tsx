@@ -1,5 +1,6 @@
 import MovieCard from "../components/MovieCard";
 import { getUpcoming10Days } from "../util/time.util";
+import qrCode from "../assets/images/qr.png";
 
 const MoviesListing = () => {
   return (
@@ -111,11 +112,19 @@ const PriceSection = () => {
             </tr>
           </table>
         </div>
+        <div className="flex flex-col items-center justify-center space-y-3 mt-4">
+                <h1 className="font-bold">Pay ₹2000</h1>
+                <img src={qrCode} width={150} className="object-contain"/>
+
+                <p className="text-xs text-neutral-400">* After paying the amount, click on the Book Now button to book the show*</p>
+        </div>
       </div>
+
+        
 
       <div className="flex-[0.1] w-full h-full flex items-end">
         <button className="w-full py-3 text-center rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200">
-          Pay ₹2000
+          Book Now
         </button>
       </div>
     </div>
