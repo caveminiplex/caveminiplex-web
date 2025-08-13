@@ -14,6 +14,9 @@ const addMovie = asyncHandler(async (req: Request, res: Response) => {
   }
 
   try {
+
+    
+
   } catch (e) {}
 
   res.status(StatusCodes.OK).json({ message: "Movie booked successfully" });

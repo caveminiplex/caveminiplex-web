@@ -1,11 +1,15 @@
+import type { Movie } from "../types/movie.type";
+
 const MovieCard = ({
-  width = "220px",
-  height = "300px",
-  titleSize="0.8rem"
+  width = "200px",
+  height = "280px",
+  titleSize="0.8rem",
+  movieInfo
 }: {
   width?: string;
   height?: string;
   titleSize?:string;
+  movieInfo:Movie
 }) => {
   return (
     <div
@@ -13,14 +17,14 @@ const MovieCard = ({
       style={{
         width,
         height,
-        backgroundImage: `url(https://images.filmibeat.com/ph-big/2025/07/mahavatar-narsimha1752149125_0.jpeg)`,
+        backgroundImage: `url(${movieInfo.poster_url})`,
       }}
     >
       <div className="absolute bottom-0 w-full right-0 py-3 px-3 text-start backdrop-blur-xs space-y-1 rounded-b-lg">
         <h2 className="text-white font-bold" style={{
             fontSize: titleSize,
-        }}>Mahavatar Narsimha</h2>
-        <p className="text-[0.6rem] text-white">2h 10m</p>
+        }}>{movieInfo.title}</h2>
+        <p className="text-[0.6rem] text-white">{movieInfo.duration}</p>
       </div>
     </div>
   );

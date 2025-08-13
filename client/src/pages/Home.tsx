@@ -4,6 +4,8 @@ import Footer from "../components/Footer";
 import Lottie from "lottie-react";
 import movieTheatreLottie from "../assets/lottie/movieTheatre.json";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import type { Movie } from "../types/movie.type";
 
 const Slideshow = () => {
   const slides = [
@@ -41,8 +43,56 @@ const Slideshow = () => {
   );
 };
 
+export const fetchMovies = async (pageno: number): Promise<Movie[]> => {
+  const url = `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${pageno}"`;
+
+  const options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      Authorization:
+        "Bearer ",
+    },
+  };
+
+  const movies: Movie[] = [];
+
+  await fetch(url, options)
+    .then(async (r) => {
+      const data = await r.json();
+
+      for (let i = 0; i <= 10; i++) {
+        movies.push({
+          id: data.results[i].id,
+          duration: "2h 4m",
+          poster_url: `https://image.tmdb.org/t/p/original/${data.results[i].poster_path}`,
+          state: "current",
+          title: data.results[i].title,
+        });
+      }
+    })
+    .catch((err) => console.error(err));
+
+  return movies;
+};
+
 const Home = () => {
   const navigate = useNavigate();
+
+  const [currentMovies, setCurrentMovies] = useState<Movie[]>([]);
+  const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
+
+  const fetchAllMovies = async () => {
+    const currentMovies = await fetchMovies(1);
+    const upcomingMovies = await fetchMovies(2);
+
+    setCurrentMovies(currentMovies);
+    setUpcomingMovies(upcomingMovies);
+  };
+
+  useEffect(() => {
+    fetchAllMovies();
+  }, []);
 
   return (
     <div className="w-full h-full overflow-y-scroll custom-scrollbar">
@@ -76,19 +126,17 @@ const Home = () => {
       <section className="w-full px-6 py-10">
         <h2 className="text-2xl font-medium">Currently Showing</h2>
 
-        <div className="pt-8 pb-3 w-full overflow-x-scroll custom-scrollbar">
-          <div className=" flex items-center space-x-7">
-            {[0, 1, 2, 3, 4, 5, 6, 7].map((value) => (
-              <div
-                key={value}
-                onClick={() => {
-                  navigate("/book");
-                }}
-              >
-                <MovieCard />
-              </div>
-            ))}
-          </div>
+        <div className="pt-8 pb-3 w-full flex items-center gap-6 flex-wrap">
+          {currentMovies.map((movie) => (
+            <div
+              key={movie.id}
+              onClick={() => {
+                navigate("/book");
+              }}
+            >
+              <MovieCard movieInfo={movie} />
+            </div>
+          ))}
         </div>
       </section>
 
@@ -97,21 +145,18 @@ const Home = () => {
 
         <div className="pt-8 pb-3 w-full overflow-x-scroll custom-scrollbar">
           <div className=" flex items-center space-x-7">
-            <MovieCard />
-            <MovieCard />
-            <MovieCard />
-            <MovieCard />
-            <MovieCard />
-            <MovieCard />
-            <MovieCard />
-            <MovieCard />
+            {upcomingMovies.map((movie) => (
+              <div key={movie.id}>
+                <MovieCard movieInfo={movie} />
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       <section className="w-full px-16 py-20  h-[500px] flex flex-1 items-center">
         <div className="flex-[0.5]">
-          <h2 className="text-5xl">Why Watch With Us?</h2>
+          <h2 className="text-5xl">Why watch with us?</h2>
 
           <ul className="list-disc text-3xl pl-6 pt-8 leading-16 font-extralight">
             <li>Big Screen Nostalgia 🎥</li>
