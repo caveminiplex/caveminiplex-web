@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { Movie } from "../types/movie.type";
 import moviePosters from "../assets/images/movie-posters.png"
+import { useLoading } from "../LoadingContext";
 
 const Slideshow = () => {
   const slides = [
@@ -82,14 +83,19 @@ const Home = () => {
 
   const [currentMovies, setCurrentMovies] = useState<Movie[]>([]);
   const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
+  const {setLoading} = useLoading();
+
 
   const fetchAllMovies = async () => {
+    setLoading(true)
     const currentMovies = await fetchMovies(1);
     const upcomingMovies = await fetchMovies(2);
 
     setCurrentMovies(currentMovies);
     setUpcomingMovies(upcomingMovies);
+    setLoading(false)
   };
+
 
   useEffect(() => {
     fetchAllMovies();

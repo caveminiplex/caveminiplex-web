@@ -1,8 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
 
-const Layout = () => {
-
+const AdminLayout = () => {
   return (
     <div className="w-full h-screen flex flex-1 flex-col overflow-hidden relative">
       <div className="flex-[0.09] w-full h-full">
@@ -16,4 +15,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default AdminLayout;

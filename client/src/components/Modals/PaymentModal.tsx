@@ -1,5 +1,5 @@
 import { useState } from "react";
-import qrCode from "../assets/images/qr.png";
+import qrCode from "../../assets/images/qr.png";
 
 const PaymentModal = ({
   isOpen,

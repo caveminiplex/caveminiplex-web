@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { getUpcoming10Days } from "../../util/time.util";
+import {
+  addTimes,
+  getUpcoming10Days,
+  timeObjToStr,
+} from "../../util/time.util";
 import Timebox from "../Timebox";
 
 export type DateType = {
@@ -18,8 +22,8 @@ export type SlotType = {
   date: DateType | null;
   audi: number | null;
   noOfPerons: number;
-  startTime: TimeType;
-  endTime: TimeType;
+  startTime: TimeType | null;
+  endTime: TimeType | null;
 };
 
 const SLOTS: TimeType[] = [
@@ -57,7 +61,9 @@ const SLOTS: TimeType[] = [
 
 const PickingSection = ({
   setSlotInfo,
+  totalTime,
 }: {
+  totalTime: string;
   setSlotInfo: React.Dispatch<React.SetStateAction<SlotType | null>>;
 }) => {
   const [selectedDate, setSelectedDate] = useState<DateType | null>(null);
@@ -86,8 +92,8 @@ const PickingSection = ({
       date: selectedDate,
       audi: selectedAudi,
       noOfPerons: noOfPersons,
-      startTime: startTime!,
-      endTime: startTime!,
+      startTime: startTime,
+      endTime: startTime ? addTimes(startTime, totalTime) : null,
     });
   }, [selectedDate, selectedAudi, startTime, noOfPersons]);
 
@@ -173,8 +179,28 @@ const PickingSection = ({
       </div>
 
       {startTime && (
-        <div className="w-full h-[70px]  absolute bottom-0 px-4 flex justify-center">
-          <div className="bg-gradient-to-l from-blue-200 from-[50%] to-neutral-100 w-full h-full shadow-2xl rounded-lg"></div>
+        <div className="w-full h-fit  absolute bottom-0 px-4  flex justify-center">
+          <div className="bg-gradient-to-l from-blue-200 from-[50%] to-neutral-100 w-full h-full shadow-2xl rounded-lg flex flex-1  items-center justify-evenly px-6 py-4">
+            <div className="flex-[0.2] flex flex-col items-start">
+              <p className="text-neutral-800">Start Time</p>
+              <p className="text-sm text-neutral-500">
+                {timeObjToStr(startTime)}
+              </p>
+            </div>
+
+            <div className="flex-[0.6] w-full h-[1px] border border-neutral-500 border-dashed"></div>
+
+            <div className="flex-[0.2] flex flex-col items-end">
+              {totalTime !== "0h 0m" && (
+                <>
+                  <p className="text-neutral-800">End Time</p>
+                  <p className="text-sm text-neutral-500">
+                    {timeObjToStr(addTimes(startTime, totalTime))}
+                  </p>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

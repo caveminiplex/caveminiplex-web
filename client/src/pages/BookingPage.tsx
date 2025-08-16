@@ -3,8 +3,9 @@ import type { Movie } from "../types/movie.type";
 import PickingSection, { type SlotType } from "../components/booking/PickingSection";
 import MoviesListing from "../components/booking/MoviesListing";
 import PriceSection from "../components/booking/PriceSection";
-import PaymentModal from "../components/PaymentModal";
+import PaymentModal from "../components/Modals/PaymentModal";
 import { calculatePrice } from "../util/time.util";
+import AddOnModal from "../components/Modals/AddOnModal";
 
 
 
@@ -17,10 +18,12 @@ const BookingPage = () => {
   const [totalTime, setTotalTime] = useState<string>("");
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false)
+  const [isAddOnModalOpen, setAddOnModalOpen] = useState<boolean>(false)
 
   return (
     <>
     <PaymentModal isOpen={isPaymentModalOpen} setIsOpen={setIsPaymentModalOpen} amount={calculatePrice(totalTime)}/>
+    <AddOnModal isOpen={isAddOnModalOpen} setIsOpen={setAddOnModalOpen}/>
 
      <div className="w-full h-full flex flex-1">
       {/* MoviesListing */}
@@ -42,7 +45,7 @@ const BookingPage = () => {
 
       {/* date and time selectors */}
       <section className="flex-[0.4] h-full py-5 overflow-hidden ">
-        <PickingSection  setSlotInfo={setSlotInfo}/>
+        <PickingSection  setSlotInfo={setSlotInfo} totalTime={totalTime}/>
       </section>
 
       {/* Price calculation */}
@@ -52,6 +55,7 @@ const BookingPage = () => {
           totalTime={totalTime}
           selectedMovies={selectedMovies}
           setIsPaymentModalOpen={setIsPaymentModalOpen}
+          setIsAddOnModalOpen={setAddOnModalOpen}
         />
       </section>
     </div>

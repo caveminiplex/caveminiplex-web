@@ -3,6 +3,7 @@ import type { Movie } from "../../types/movie.type";
 import MovieCard from "../MovieCard";
 import { calculateTotalTime } from "../../util/time.util";
 import { fetchMovies } from "../../pages/Home";
+import { useNavigate } from "react-router-dom";
 
 const MoviesListing = ({
   selectedMovies,
@@ -13,6 +14,8 @@ const MoviesListing = ({
   selectedMovies: Movie[];
   setSelectedMovies: React.Dispatch<React.SetStateAction<Movie[]>>;
 }) => {
+  const navigate = useNavigate();
+
   const [currentMovies, setCurrentMovies] = useState<Movie[]>([]);
 
   const fetchAllMovies = async () => {
@@ -44,14 +47,17 @@ const MoviesListing = ({
   };
 
   return (
-    <div className="overflow-y-scroll h-full custom-scrollbar-thin">
-        <div className="w-full flex items-center justify-center py-3">
-            <button
-              className="w-full py-3 mx-3 rounded-xl font-medium bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white transition text-sm"
-            >
-              Browse movies
-            </button>
-        </div>
+    <div className="overflow-y-scroll h-full custom-scrollbar-thin relative">
+      <div className="w-full sticky top-0 flex items-center justify-center py-3 z-30">
+        <button
+          onClick={() => {
+            navigate("/browse");
+          }}
+          className="w-full py-3 mx-3 rounded-xl font-medium bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white transition text-sm cursor-pointer"
+        >
+          Browse movies
+        </button>
+      </div>
       <div className="grid grid-cols-2 gap-5">
         {currentMovies.map((movie) => (
           <div
