@@ -10,7 +10,7 @@ const PriceSection = ({
   isMovieSlotSelected: boolean;
   totalTime: string;
   selectedMovies: Movie[];
-  setIsPaymentModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setIsPaymentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
     <div className="w-full h-full flex flex-1 flex-col justify-between">
@@ -27,30 +27,36 @@ const PriceSection = ({
           </div>
 
           <table className="w-full mt-4 text-xs [&>tr>td]:text-[11px] [&>tr>td]:py-2">
-            <tr className="font-medium border-b border-neutral-300 [&>th]:pb-1">
-              <th className="text-start">Movie</th>
-              <th className="text-center">Time</th>
-              <th className="text-center">Price/h</th>
-              <th className="text-end">Total</th>
-            </tr>
-
-            {selectedMovies.map((movie) => (
-              <tr key={movie.id}>
-                <td>{movie.title}</td>
-                <td className="text-center">{movie.duration}</td>
-                <td className="text-center">₹ 350</td>
-                <td className="text-end">₹ {calculatePrice(movie.duration)}</td>
+            <thead>
+              <tr className="font-medium border-b border-neutral-300 [&>th]:pb-1">
+                <th className="text-start">Movie</th>
+                <th className="text-center">Time</th>
+                <th className="text-center">Price/h</th>
+                <th className="text-end">Total</th>
               </tr>
-            ))}
+            </thead>
 
-            {selectedMovies.length != 0 && (
-              <tr className="border-t border-neutral-300">
-                <td className="font-semibold">Total</td>
-                <td></td>
-                <td></td>
-                <td className="text-end">₹ {calculatePrice(totalTime)}</td>
-              </tr>
-            )}
+            <tbody>
+              {selectedMovies.map((movie) => (
+                <tr key={movie.id}>
+                  <td>{movie.title}</td>
+                  <td className="text-center">{movie.duration}</td>
+                  <td className="text-center">₹ 350</td>
+                  <td className="text-end">
+                    ₹ {calculatePrice(movie.duration)}
+                  </td>
+                </tr>
+              ))}
+
+              {selectedMovies.length != 0 && (
+                <tr className="border-t border-neutral-300">
+                  <td className="font-semibold">Total</td>
+                  <td></td>
+                  <td></td>
+                  <td className="text-end">₹ {calculatePrice(totalTime)}</td>
+                </tr>
+              )}
+            </tbody>
           </table>
         </div>
       </div>
@@ -60,10 +66,8 @@ const PriceSection = ({
           className={`w-full py-3 text-center rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200 cursor-pointer ${
             isMovieSlotSelected ? "brightness-100" : "brightness-50"
           }`}
-
           onClick={() => {
-            if(isMovieSlotSelected)
-                setIsPaymentModalOpen(true)
+            if (isMovieSlotSelected) setIsPaymentModalOpen(true);
           }}
         >
           Pay Now ₹{calculatePrice(totalTime)}

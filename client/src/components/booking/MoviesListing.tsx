@@ -45,6 +45,13 @@ const MoviesListing = ({
 
   return (
     <div className="overflow-y-scroll h-full custom-scrollbar-thin">
+        <div className="w-full flex items-center justify-center py-3">
+            <button
+              className="w-full py-3 mx-3 rounded-xl font-medium bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white transition text-sm"
+            >
+              Browse movies
+            </button>
+        </div>
       <div className="grid grid-cols-2 gap-5">
         {currentMovies.map((movie) => (
           <div

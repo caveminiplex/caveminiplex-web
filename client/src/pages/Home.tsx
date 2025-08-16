@@ -6,6 +6,7 @@ import movieTheatreLottie from "../assets/lottie/movieTheatre.json";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { Movie } from "../types/movie.type";
+import moviePosters from "../assets/images/movie-posters.png"
 
 const Slideshow = () => {
   const slides = [
@@ -51,7 +52,7 @@ export const fetchMovies = async (pageno: number): Promise<Movie[]> => {
     headers: {
       accept: "application/json",
       Authorization:
-        "Bearer ",
+        `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
     },
   };
 
@@ -170,8 +171,88 @@ const Home = () => {
         </div>
       </section>
 
+      <section className="w-full px-20 py-40">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-5xl text-gray-900 mb-16">How It Works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+            {[
+              {
+                icon: "🎬",
+                title: "Choose a Movie",
+                desc: "Select your favorite classic or cult film.",
+              },
+              {
+                icon: "📅",
+                title: "Pick Date & Room",
+                desc: "Book a private room for up to 5 friends.",
+              },
+              {
+                icon: "🍿",
+                title: "Add Snacks",
+                desc: "Popcorn, drinks & munchies delivered inside.",
+              },
+              {
+                icon: "🎉",
+                title: "Enjoy Together",
+                desc: "Your private cinema, your rules.",
+              },
+            ].map((step, idx) => (
+              <div
+                key={idx}
+                className="bg-neutral-50 rounded-3xl shadow-xl p-8 hover:scale-105 transition-transform"
+              >
+                <div className="text-5xl mb-6">{step.icon}</div>
+                <h3 className="text-2xl font-semibold mb-3">{step.title}</h3>
+                <p className="text-lg text-gray-600">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="w-full px-20 py-24 flex items-center">
+        <div className="flex-1">
+          <h2 className="text-5xl leading-tight pr-10">
+            Your Own Cinema, Your Rules 🍿
+          </h2>
+          <p className="mt-6 text-2xl text-neutral-700 max-w-xl">
+            No strangers, no interruptions. Just you, your chosen movie, and
+            your favorite people in a cozy private theatre.
+          </p>
+          <button
+            onClick={() => {
+              navigate("/browse");
+            }}
+            className="mt-10 px-10 py-4 rounded-2xl  bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white text-xl font-bold hover:bg-yellow-300 transition cursor-pointer"
+          >
+            Select Your Movie Now
+          </button>
+        </div>
+
+        <div className="flex-1 flex justify-center">
+          <img src={moviePosters} alt="Movie Posters" className="mix-blend-multiply"/>
+        </div>
+      </section>
+
       {/* Book tickets now footer banner */}
-      <section className="w-full h-60 mt-20 bg-gradient-to-b from-transparent to-blue-300"></section>
+      <section className="w-full h-60 mt-20 bg-gradient-to-b from-transparent to-blue-300 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl font-bold text-gray-900">
+            Don’t Miss Out on the Big Screen!
+          </h2>
+          <p className="text-gray-700">
+            Grab your seats now and enjoy the best cinematic experience.
+          </p>
+          <button
+            onClick={() => {
+              navigate("\book");
+            }}
+            className="px-6 py-3 rounded-xl bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white font-semibold shadow-lg transition cursor-pointer"
+          >
+            🎟️ Buy Tickets Now
+          </button>
+        </div>
+      </section>
       <Footer />
     </div>
   );
