@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import MovieCard from "../components/MovieCard";
 import type { Movie } from "../types/movie.type";
+import userApi from "../apis/userApi";
 
 const BrowseMovies = () => {
   const [query, setQuery] = useState<string>("");
@@ -14,24 +15,21 @@ const BrowseMovies = () => {
       } else {
         setMovies([]);
       }
-    }, 500); // 500ms debounce
+    }, 500);
 
     return () => clearTimeout(delayDebounce);
   }, [query]);
 
-  const fetchMovies = async (searchTerm:string) => {
+  const fetchMovies = async (searchTerm: string) => {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        `https://api.themoviedb.org/3/search/movie?api_key=${
-          import.meta.env.VITE_TMDB_API_KEY
-        }&query=${encodeURIComponent(searchTerm)}`
+      const res = await userApi.get(
+        `/movie/search?search=${encodeURIComponent(searchTerm)}`
       );
-      const data = await response.json();
 
-      if (data.results) {
-        setMovies(data.results);
+      if (res.status == 200 && res.data) {
+        setMovies(res.data.data);
       } else {
         setMovies([]);
       }
@@ -44,17 +42,16 @@ const BrowseMovies = () => {
   };
 
   return (
-    <div className="w-full min-h-screen px-10 py-12 bg-gradient-to-b from-indigo-50 to-blue-100">
-
-        <h1 className="text-center text-2xl mb-10">Browse Movies</h1>
+    <div className="w-full min-h-screen px-7 py-12 bg-gradient-to-b from-indigo-50 to-blue-100">
+      <h1 className="text-center text-2xl mb-7">Browse Movies</h1>
       {/* Search Bar */}
-      <div className="max-w-3xl mx-auto mb-12">
+      <div className="max-w-3xl mx-auto mb-8">
         <input
           type="text"
           placeholder="Search for a movie..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full px-6 py-4 rounded-2xl shadow-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-lg"
+          className="w-full px-6 py-3 rounded-lg shadow-lg border border-gray-300 focus:outline-none text-lg"
         />
       </div>
 
@@ -64,13 +61,12 @@ const BrowseMovies = () => {
       )}
 
       {/* Movie Results */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {movies.map((movie) => (
-          <MovieCard
-            key={movie.id}
-            movieInfo={movie}
-          />
-        ))}
+      <div className="overflow-y-scroll h-[500px] pt-5 pb-40 custom-scrollbar-thin">
+        <div className="flex justify-center gap-8 flex-wrap">
+          {movies.map((movie) => (
+            <MovieCard key={movie.id} movieInfo={movie} type="browse" />
+          ))}
+        </div>
       </div>
 
       {/* No results */}

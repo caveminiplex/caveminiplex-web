@@ -3,13 +3,15 @@ import type { Movie } from "../types/movie.type";
 const MovieCard = ({
   width = "200px",
   height = "280px",
-  titleSize="0.8rem",
-  movieInfo
+  titleSize = "0.8rem",
+  movieInfo,
+  type = "normal",
 }: {
   width?: string;
   height?: string;
-  titleSize?:string;
-  movieInfo:Movie
+  titleSize?: string;
+  movieInfo: Movie;
+  type?: "normal" | "browse";
 }) => {
   return (
     <div
@@ -21,10 +23,17 @@ const MovieCard = ({
       }}
     >
       <div className="absolute bottom-0 w-full right-0 py-3 px-3 text-start backdrop-blur-xs space-y-1 rounded-b-lg">
-        <h2 className="text-white font-bold" style={{
+        <h2
+          className="text-white font-bold"
+          style={{
             fontSize: titleSize,
-        }}>{movieInfo.title}</h2>
-        <p className="text-[0.6rem] text-white">{movieInfo.duration}</p>
+          }}
+        >
+          {movieInfo.title}
+        </h2>
+        {type === "normal" && (
+          <p className="text-[0.6rem] text-white">{movieInfo.duration}</p>
+        )}
       </div>
     </div>
   );

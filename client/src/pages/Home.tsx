@@ -6,8 +6,9 @@ import movieTheatreLottie from "../assets/lottie/movieTheatre.json";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { Movie } from "../types/movie.type";
-import moviePosters from "../assets/images/movie-posters.png"
+import moviePosters from "../assets/images/movie-posters.png";
 import { useLoading } from "../LoadingContext";
+import userApi from "../apis/userApi";
 
 const Slideshow = () => {
   const slides = [
@@ -52,8 +53,7 @@ export const fetchMovies = async (pageno: number): Promise<Movie[]> => {
     method: "GET",
     headers: {
       accept: "application/json",
-      Authorization:
-        `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
+      Authorization: `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
     },
   };
 
@@ -83,19 +83,23 @@ const Home = () => {
 
   const [currentMovies, setCurrentMovies] = useState<Movie[]>([]);
   const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
-  const {setLoading} = useLoading();
+  const { setLoading } = useLoading();
 
+  const fetchCurrentMovies = async () => {
+    const res = await userApi.get("/movies");
+    const data = res.data.data;
+    return data;
+  };
 
   const fetchAllMovies = async () => {
-    setLoading(true)
-    const currentMovies = await fetchMovies(1);
+    setLoading(true);
+    const currentMovies = await fetchCurrentMovies();
     const upcomingMovies = await fetchMovies(2);
 
     setCurrentMovies(currentMovies);
     setUpcomingMovies(upcomingMovies);
-    setLoading(false)
+    setLoading(false);
   };
-
 
   useEffect(() => {
     fetchAllMovies();
@@ -236,7 +240,11 @@ const Home = () => {
         </div>
 
         <div className="flex-1 flex justify-center">
-          <img src={moviePosters} alt="Movie Posters" className="mix-blend-multiply"/>
+          <img
+            src={moviePosters}
+            alt="Movie Posters"
+            className="mix-blend-multiply"
+          />
         </div>
       </section>
 

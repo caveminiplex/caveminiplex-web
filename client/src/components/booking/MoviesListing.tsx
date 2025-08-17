@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import type { Movie } from "../../types/movie.type";
 import MovieCard from "../MovieCard";
 import { calculateTotalTime } from "../../util/time.util";
-import { fetchMovies } from "../../pages/Home";
 import { useNavigate } from "react-router-dom";
+import userApi from "../../apis/userApi";
 
 const MoviesListing = ({
   selectedMovies,
@@ -18,14 +18,15 @@ const MoviesListing = ({
 
   const [currentMovies, setCurrentMovies] = useState<Movie[]>([]);
 
-  const fetchAllMovies = async () => {
-    const movies = await fetchMovies(1);
+ const fetchCurrentMovies = async () => {
+    const res = await userApi.get("/movies");
+    const data = res.data.data;
 
-    setCurrentMovies(movies);
+    setCurrentMovies(data)
   };
 
   useEffect(() => {
-    fetchAllMovies();
+    fetchCurrentMovies()
   }, []);
 
   useEffect(() => {

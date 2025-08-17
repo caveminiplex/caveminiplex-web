@@ -1,10 +1,17 @@
+import https from "https"
+
+
 export const tmdbCall = async (url: string) => {
+
+    const agent = new https.Agent({ keepAlive: true });
+
   const options = {
     method: "GET",
     headers: {
       accept: "application/json",
       Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
     },
+    agent
   };
 
   try{
@@ -19,6 +26,7 @@ export const tmdbCall = async (url: string) => {
     return data;
 
   }catch(e){
+    console.log(e)
     return null;
   }
 

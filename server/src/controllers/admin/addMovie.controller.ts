@@ -36,7 +36,7 @@ export const addMovie = asyncHandler(async (req: Request, res: Response) => {
 
     await dynamoDocClient.send(
       new PutCommand({
-        TableName: "Movies",
+        TableName: "movies",
         Item: movie,
       })
     );
@@ -45,6 +45,7 @@ export const addMovie = asyncHandler(async (req: Request, res: Response) => {
       .status(StatusCodes.OK)
       .json({ message: "Movie added successfully", data: movie });
   } catch (err) {
+    console.log(err)
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Failed to add movie" });
