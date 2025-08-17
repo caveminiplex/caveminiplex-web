@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import type { TimeType } from "./booking/PickingSection";
-import { timeObjToStr } from "../util/time.util";
 import { createPortal } from "react-dom";
 
 const MINUTES = [0, 15, 30, 45];
@@ -16,6 +15,9 @@ const Timebox = ({
 }) => {
   const [isHover, setIsHover] = useState<boolean>(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [isMinuteDivClicked, setIsMinuteDivClicked] = useState<boolean>(false);
+  const [selectedMinute, setSelectedMinute] = useState<number>(0);
+
   const divRef = useRef<HTMLDivElement>(null);
 
   const handleMouseOver = () => {
@@ -26,12 +28,15 @@ const Timebox = ({
         left: rect.left + rect.width / 2,
       });
     }
+
+    setIsMinuteDivClicked(false);
     setIsHover(true);
   };
 
   return (
     <div className="relative">
-      {isHover &&
+      {(isHover || isSelected) &&
+        !isMinuteDivClicked &&
         createPortal(
           <div
             className="absolute shadow-2xl  px-5 py-2 rounded-lg bg-white h-fit w-fit flex items-center space-x-3 z-50"
@@ -43,8 +48,22 @@ const Timebox = ({
           >
             {MINUTES.map((minute, index) => (
               <div
+                onClick={() => {
+                  setSelectedMinute(minute);
+
+                  setTime((value) => {
+                    return {
+                      ...value,
+                      min: minute,
+                    } as TimeType;
+                  });
+
+                  setIsMinuteDivClicked(true);
+                }}
                 key={index}
-                className="border border-neutral-300 rounded-sm px-2 py-1"
+                className={`border border-neutral-300 ${
+                  selectedMinute === minute && "bg-blue-600 text-white"
+                } rounded-sm px-2 py-1 cursor-pointer transition-all hover:scale-105`}
               >
                 {minute}
               </div>
@@ -70,7 +89,7 @@ const Timebox = ({
           setIsHover(false);
         }}
       >
-        {timeObjToStr(time)}
+        {time.hour} {time.type}
       </div>
     </div>
   );

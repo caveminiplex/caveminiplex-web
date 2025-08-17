@@ -29,38 +29,40 @@ const PriceSection = ({
             <p className="font-medium">Summary</p>
           </div>
 
-          <table className="w-full mt-4 text-xs [&>*>tr>td]:text-[11px] [&>*>tr>td]:py-2">
-            <thead>
-              <tr className="font-medium border-b border-neutral-300 [&>th]:pb-1">
-                <th className="text-start">Movie</th>
-                <th className="text-center">Time</th>
-                <th className="text-center">Price/h</th>
-                <th className="text-end">Total</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {selectedMovies.map((movie) => (
-                <tr key={movie.id}>
-                  <td>{movie.title}</td>
-                  <td className="text-center">{movie.duration}</td>
-                  <td className="text-center">₹ 350</td>
-                  <td className="text-end">
-                    ₹ {calculatePrice(movie.duration)}
-                  </td>
+          <div className="w-full h-[300px] overflow-y-scroll custom-scrollbar-thin">
+            <table className="w-full  mt-4 text-xs [&>*>tr>td]:text-[11px] [&>*>tr>td]:py-2">
+              <thead>
+                <tr className="font-medium border-b border-neutral-300 [&>th]:pb-1">
+                  <th className="text-start">Movie</th>
+                  <th className="text-center">Time</th>
+                  <th className="text-center">Price/h</th>
+                  <th className="text-end">Total</th>
                 </tr>
-              ))}
+              </thead>
 
-              {selectedMovies.length != 0 && (
-                <tr className="border-t border-neutral-300">
-                  <td className="font-semibold">Total</td>
-                  <td></td>
-                  <td></td>
-                  <td className="text-end">₹ {calculatePrice(totalTime)}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+              <tbody>
+                {selectedMovies.map((movie) => (
+                  <tr key={movie.id}>
+                    <td>{movie.title}</td>
+                    <td className="text-center">{movie.duration}</td>
+                    <td className="text-center">₹ 350</td>
+                    <td className="text-end">
+                      ₹ {calculatePrice(movie.duration)}
+                    </td>
+                  </tr>
+                ))}
+
+                {selectedMovies.length != 0 && (
+                  <tr className="border-t border-neutral-300 sticky bottom-0 bg-white">
+                    <td className="font-semibold px-3">Total</td>
+                    <td></td>
+                    <td></td>
+                    <td className="text-end">₹ {calculatePrice(totalTime)}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -69,7 +71,11 @@ const PriceSection = ({
         <div className="flex flex-1 py-4 px-4 space-x-4">
           {/* The popcorn image */}
           <div className="flex-[0.4]">
-            <img src={popcornImg} alt="Add on food item image" className="rounded-lg"/>
+            <img
+              src={popcornImg}
+              alt="Add on food item image"
+              className="rounded-lg"
+            />
           </div>
 
           <div className="flex-[0.6]">
@@ -81,7 +87,12 @@ const PriceSection = ({
               cinema experience. Add them along with your ticket in just one
               click.
             </p>
-            <button onClick={() => {setIsAddOnModalOpen(true)}} className="w-full mt-6 px-6 py-3 rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white font-semibold text-xs shadow hover:opacity-90 transition cursor-pointer">
+            <button
+              onClick={() => {
+                setIsAddOnModalOpen(true);
+              }}
+              className="w-full mt-6 px-6 py-3 rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white font-semibold text-xs shadow hover:opacity-90 transition cursor-pointer"
+            >
               Add Snacks to My Booking
             </button>
           </div>

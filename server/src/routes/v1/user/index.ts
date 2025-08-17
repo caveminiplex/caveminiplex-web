@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { searchMovie } from "../../../controllers/common/movie.controller";
+import { fetchAddedMovies, searchMovie } from "../../../controllers/common/movie.controller";
 import { login } from "../../../controllers/user/login.controller";
 import { authMiddleware } from "../../../middlewares/auth.middleware";
 import { AUTH_ROLES } from "../../../utils/roles";
@@ -12,6 +12,7 @@ const router = Router();
 
 // GET ENDPOINTS
 router.route("/movie/search").get(searchMovie);
+router.route("/movies").get(fetchAddedMovies)
 router.route("/slots").get(fetchAvailableSlots);
 
 // POST ENDPOINTS

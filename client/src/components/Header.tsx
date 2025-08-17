@@ -35,7 +35,7 @@ const Header = () => {
         </button>
 
         <button onClick={() => {navigate("/signup")}} className="px-8 py-1 rounded-lg border-2 border-neutral-800 text-neutral-800 cursor-pointer  hover:shadow-xl transition duration-200">
-          Signip
+          Signup
         </button>
       </div>
 
