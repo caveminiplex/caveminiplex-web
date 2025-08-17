@@ -2,11 +2,10 @@ import { Request, Response } from "express";
 import asyncHandler from "../../utils/asyncHandler";
 import { StatusCodes } from "http-status-codes";
 
-const addMovie = asyncHandler(async (req: Request, res: Response) => {
+export const bookTicket = asyncHandler(async (req: Request, res: Response) => {
   const transactionID: string = req.body.transactionID;
   const movieIds: string[] = req.body.movieIds;
 
-  // Validation
   if (!transactionID) {
     res
       .status(StatusCodes.BAD_REQUEST)
@@ -14,12 +13,7 @@ const addMovie = asyncHandler(async (req: Request, res: Response) => {
   }
 
   try {
-
-    
-
   } catch (e) {}
 
   res.status(StatusCodes.OK).json({ message: "Movie booked successfully" });
 });
-
-export default addMovie;

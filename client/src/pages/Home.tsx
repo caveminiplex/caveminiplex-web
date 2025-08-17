@@ -67,7 +67,7 @@ export const fetchMovies = async (pageno: number): Promise<Movie[]> => {
         movies.push({
           id: data.results[i].id,
           duration: "2h 4m",
-          poster_url: `https://image.tmdb.org/t/p/original/${data.results[i].poster_path}`,
+          poster_url: `https://image.tmdb.org/t/p/original${data.results[i].poster_path}`,
           state: "current",
           title: data.results[i].title,
         });
