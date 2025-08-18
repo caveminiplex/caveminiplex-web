@@ -108,7 +108,7 @@ const PickingSection = ({
                 selectDate(upcoming);
               }}
               className={`flex flex-col items-center justify-center px-5 py-3 rounded-lg  ${
-                selectedDate?.day == upcoming.day
+                selectedDate?.date == upcoming.date
                   ? "bg-blue-600 text-white"
                   : "bg-fuchsia-100"
               } transition-all hover:scale-105 cursor-pointer`}
