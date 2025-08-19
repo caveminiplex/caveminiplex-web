@@ -193,8 +193,8 @@ const Home = () => {
               },
               {
                 icon: "📅",
-                title: "Pick Date & Room",
-                desc: "Book a private room for up to 5 friends.",
+                title: "Pick Date & Theatre",
+                desc: "Book a private theatre for up to 5 friends.",
               },
               {
                 icon: "🍿",

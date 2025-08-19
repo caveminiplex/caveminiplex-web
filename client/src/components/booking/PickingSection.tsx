@@ -124,7 +124,7 @@ const PickingSection = ({
 
       {/* Rooms */}
       <div className="flex items-center justify-center space-x-3 space-y-3 mt-7 flex-wrap">
-        {[0, 1, 2, 3, 4].map((audino) => (
+        {[0, 1, 2, 3].map((audino) => (
           <div
             onClick={() => {
               selectAudi(audino);

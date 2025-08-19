@@ -1,8 +1,7 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import type { TimeType } from "./booking/PickingSection";
-import { createPortal } from "react-dom";
 
-const MINUTES = [0, 15, 30, 45];
+// const MINUTES = [0, 15, 30, 45];
 
 const Timebox = ({
   time,
@@ -13,29 +12,29 @@ const Timebox = ({
   isSelected: boolean;
   setTime: React.Dispatch<React.SetStateAction<TimeType | null>>;
 }) => {
-  const [isHover, setIsHover] = useState<boolean>(false);
-  const [position, setPosition] = useState({ top: 0, left: 0 });
-  const [isMinuteDivClicked, setIsMinuteDivClicked] = useState<boolean>(false);
-  const [selectedMinute, setSelectedMinute] = useState<number>(0);
+//   const [isHover, setIsHover] = useState<boolean>(false);
+//   const [position, setPosition] = useState({ top: 0, left: 0 });
+//   const [isMinuteDivClicked, setIsMinuteDivClicked] = useState<boolean>(false);
+//   const [selectedMinute, setSelectedMinute] = useState<number>(0);
 
   const divRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseOver = () => {
-    if (divRef.current) {
-      const rect = divRef.current.getBoundingClientRect();
-      setPosition({
-        top: rect.top - 60,
-        left: rect.left + rect.width / 2,
-      });
-    }
+//   const handleMouseOver = () => {
+//     if (divRef.current) {
+//       const rect = divRef.current.getBoundingClientRect();
+//       setPosition({
+//         top: rect.top - 60,
+//         left: rect.left + rect.width / 2,
+//       });
+//     }
 
-    setIsMinuteDivClicked(false);
-    setIsHover(true);
-  };
+//     setIsMinuteDivClicked(false);
+//     setIsHover(true);
+//   };
 
   return (
     <div className="relative">
-      {(isHover || isSelected) &&
+      {/* {(isHover || isSelected) &&
         !isMinuteDivClicked &&
         createPortal(
           <div
@@ -70,7 +69,7 @@ const Timebox = ({
             ))}
           </div>,
           document.body
-        )}
+        )} */}
 
       <div
         ref={divRef}
@@ -83,10 +82,6 @@ const Timebox = ({
               return null;
             return time;
           });
-        }}
-        onMouseOver={handleMouseOver}
-        onMouseOut={(_e) => {
-          setIsHover(false);
         }}
       >
         {time.hour} {time.type}

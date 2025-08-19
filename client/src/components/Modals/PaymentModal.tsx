@@ -11,6 +11,9 @@ const PaymentModal = ({
   amount: number;
 }) => {
   const [transactionId, setTransactionId] = useState<string>("");
+  const [name, setName] = useState<string>("")
+  const [email, setEmail] = useState<string>("")
+  const [phoneNumber, setPhoneNumber] = useState<string>("")
 
   if (isOpen) {
     return (
@@ -33,6 +36,40 @@ const PaymentModal = ({
             Book Now button to book the show*
           </p>
 
+        <input
+            type="text"
+            placeholder="Full Name"
+            required
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+            className="w-full border-b border-neutral-400 text-sm pb-3 outline-none mt-4"
+          />
+
+          <input
+            type="text"
+            placeholder="Phone Number"
+            required
+            value={phoneNumber}
+            onChange={(e) => {
+              setPhoneNumber(e.target.value);
+            }}
+            className="w-full border-b border-neutral-400 text-sm pb-3 outline-none mt-4"
+          />
+
+
+          <input
+            type="email"
+            placeholder="Email"
+            required
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+            className="w-full border-b border-neutral-400 text-sm pb-3 outline-none mt-4"
+          />
+
           <input
             type="text"
             placeholder="Transaction ID"
@@ -46,7 +83,7 @@ const PaymentModal = ({
 
           <button
             className={`w-fit px-10 py-2 text-sm mt-10 text-center rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200 ${
-              transactionId ? "brightness-100" : "brightness-50"
+              (transactionId && name && email && phoneNumber) ? "brightness-100" : "brightness-50"
             }`}
           >
             Book Now

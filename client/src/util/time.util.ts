@@ -85,7 +85,7 @@ export const addTimes = (startTime: TimeType, duration: string): TimeType => {
   };
 };
 
-export const calculatePrice = (totalTime: string) => {
+export const calculatePrice = (totalTime: string, noOfPersons: number) => {
   const hoursMatch = totalTime.match(/(\d+)h/);
   const minutesMatch = totalTime.match(/(\d+)m/);
 
@@ -98,12 +98,22 @@ export const calculatePrice = (totalTime: string) => {
   // Calculate price at ₹350 per hour
   const price = totalHours * 350;
 
-  // Round to 2 decimals for cleaner output
-  return Number(price.toFixed(2));
+  const returnValue: number =
+    noOfPersons <= 2
+      ? Number(price.toFixed(2))
+      : Number(price.toFixed(2)) + (noOfPersons - 2) * 100;
+
+  console.log(returnValue);
+
+  return returnValue;
 };
 
 export const timeObjToStr = (time: TimeType): string => {
   return `${time.hour}:${time.min < 10 ? `0${time.min}` : time.min} ${
     time.type
   }`;
+};
+
+export const roundOffCost = (cost: number): number => {
+  return Math.floor(cost / 100) * 100;
 };

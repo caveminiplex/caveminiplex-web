@@ -1,23 +1,22 @@
 import type { Movie } from "../../types/movie.type";
-import { calculatePrice } from "../../util/time.util";
-import popcornImg from "../../assets/images/popcorn.jpg";
+import { calculatePrice, roundOffCost } from "../../util/time.util";
 
 const PriceSection = ({
   isMovieSlotSelected,
   totalTime,
   selectedMovies,
   setIsPaymentModalOpen,
-  setIsAddOnModalOpen,
+  noOfPersons,
 }: {
   isMovieSlotSelected: boolean;
   totalTime: string;
   selectedMovies: Movie[];
   setIsPaymentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsAddOnModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  noOfPersons:number;
 }) => {
   return (
     <div className="w-full h-full flex flex-1 flex-col justify-between">
-      <div className="flex-[0.7] w-full h-full">
+      <div className="flex-[0.95] w-full h-full">
         <div className=" w-full bg-gradient-to-r from-blue-100 from-[20%] to-transparent px-7 py-5 rounded-lg">
           <h2 className="text-2xl text-neutral-800 font-semibold">
             Total time: {totalTime}
@@ -29,13 +28,13 @@ const PriceSection = ({
             <p className="font-medium">Summary</p>
           </div>
 
-          <div className="w-full h-[300px] overflow-y-scroll custom-scrollbar-thin">
-            <table className="w-full  mt-4 text-xs [&>*>tr>td]:text-[11px] [&>*>tr>td]:py-2">
+          <div className="w-full overflow-y-scroll custom-scrollbar-thin">
+            <table className="w-full mt-4 text-xs [&>*>tr>td]:text-[11px] [&>*>tr>td]:py-2">
               <thead>
                 <tr className="font-medium border-b border-neutral-300 [&>th]:pb-1">
                   <th className="text-start">Movie</th>
                   <th className="text-center">Time</th>
-                  <th className="text-center">Price/h</th>
+                  <th className="text-center">Price</th>
                   <th className="text-end">Total</th>
                 </tr>
               </thead>
@@ -47,17 +46,30 @@ const PriceSection = ({
                     <td className="text-center">{movie.duration}</td>
                     <td className="text-center">₹ 350</td>
                     <td className="text-end">
-                      ₹ {calculatePrice(movie.duration)}
+                      ₹ {calculatePrice(movie.duration,0)}
                     </td>
                   </tr>
                 ))}
 
+                {
+                    noOfPersons > 2 && (
+                         <tr key={"per-person-cost"}>
+                    <td>Additional Person Charge</td>
+                    <td></td>
+                    <td>₹ 100</td>
+                    <td className="text-end">
+                      ₹ {(noOfPersons-2)*100}
+                    </td>
+                  </tr>
+                    )
+                }
+
                 {selectedMovies.length != 0 && (
-                  <tr className="border-t border-neutral-300 sticky bottom-0 bg-white">
+                  <tr className="border-t border-neutral-300 bg-white">
                     <td className="font-semibold px-3">Total</td>
                     <td></td>
                     <td></td>
-                    <td className="text-end">₹ {calculatePrice(totalTime)}</td>
+                    <td className="text-end">₹ {roundOffCost(calculatePrice(totalTime, noOfPersons))}</td>
                   </tr>
                 )}
               </tbody>
@@ -66,10 +78,9 @@ const PriceSection = ({
         </div>
       </div>
 
-      <div className="flex-[0.3] w-full h-full flex flex-col items-end border-t border-t-neutral-300">
+      <div className="flex-[0.05] w-full h-full flex flex-col items-end border-t border-t-neutral-300">
         {/* Add on section */}
-        <div className="flex flex-1 py-4 px-4 space-x-4">
-          {/* The popcorn image */}
+        {/* <div className="flex flex-1 py-4 px-4 space-x-4">
           <div className="flex-[0.4]">
             <img
               src={popcornImg}
@@ -96,7 +107,7 @@ const PriceSection = ({
               Add Snacks to My Booking
             </button>
           </div>
-        </div>
+        </div> */}
 
         <button
           className={`w-full py-3 text-center rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200 cursor-pointer ${
@@ -106,7 +117,7 @@ const PriceSection = ({
             if (isMovieSlotSelected) setIsPaymentModalOpen(true);
           }}
         >
-          Pay Now ₹{calculatePrice(totalTime)}
+          Pay Now ₹{roundOffCost(calculatePrice(totalTime, noOfPersons))}
         </button>
       </div>
     </div>
