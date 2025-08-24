@@ -9,6 +9,7 @@ import type { Movie } from "../types/movie.type";
 import moviePosters from "../assets/images/movie-posters.png";
 import { useLoading } from "../LoadingContext";
 import userApi from "../apis/userApi";
+import movieBanner from "../assets/images/movie-banner.png";
 
 const Slideshow = () => {
   const slides = [
@@ -46,7 +47,6 @@ const Slideshow = () => {
   );
 };
 
-
 export const fetchMovies = async (state: string, duration?: string) => {
   const res = await userApi.get(
     `/movies?state=${state}${duration ? `&duration=${duration}` : ""}`
@@ -54,7 +54,6 @@ export const fetchMovies = async (state: string, duration?: string) => {
   const data = res.data.data;
   return data;
 };
-
 
 const Home = () => {
   const navigate = useNavigate();
@@ -75,7 +74,6 @@ const Home = () => {
 
   const { setLoading } = useLoading();
 
-  
   const fetchAllMovies = async () => {
     setLoading(true);
     const currentMovies = await fetchMovies("NOW_SHOWING");
@@ -129,54 +127,54 @@ const Home = () => {
       </div>
 
       {movies.currentMovies.length > 0 && (
-      <section className="w-full px-6 py-10">
-        <h2 className="text-2xl font-medium">Currently Showing</h2>
+        <section className="w-full px-6 py-10">
+          <h2 className="text-2xl font-medium">Currently Showing</h2>
 
-        <div className="pt-8 pb-3 w-full flex items-center gap-6 flex-wrap">
-          {movies.currentMovies.map((movie) => (
-            <div
-              key={movie.id}
-              onClick={() => {
-                navigate("/book");
-              }}
-            >
-              <MovieCard movieInfo={movie} />
-            </div>
-          ))}
-        </div>
-      </section>
+          <div className="pt-8 pb-3 w-full flex items-center gap-6 flex-wrap">
+            {movies.currentMovies.map((movie) => (
+              <div
+                key={movie.id}
+                onClick={() => {
+                  navigate("/book");
+                }}
+              >
+                <MovieCard movieInfo={movie} />
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       {movies.oneHourMovies.length > 0 && (
-      <section className="w-full px-6 py-10">
-        <h2 className="text-2xl font-medium">One Hour Movies</h2>
+        <section className="w-full px-6 py-10">
+          <h2 className="text-2xl font-medium">One Hour Movies</h2>
 
-        <div className="pt-8 pb-3 w-full overflow-x-scroll custom-scrollbar">
-          <div className=" flex items-center space-x-7">
-            {movies.oneHourMovies.map((movie) => (
-              <div key={movie.id}>
-                <MovieCard movieInfo={movie} />
-              </div>
-            ))}
+          <div className="pt-8 pb-3 w-full overflow-x-scroll custom-scrollbar">
+            <div className=" flex items-center space-x-7">
+              {movies.oneHourMovies.map((movie) => (
+                <div key={movie.id}>
+                  <MovieCard movieInfo={movie} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       )}
 
       {movies.twoHourMovies.length > 0 && (
-      <section className="w-full px-6 py-10">
-        <h2 className="text-2xl font-medium">Two Hour Movies</h2>
+        <section className="w-full px-6 py-10">
+          <h2 className="text-2xl font-medium">Two Hour Movies</h2>
 
-        <div className="pt-8 pb-3 w-full overflow-x-scroll custom-scrollbar">
-          <div className=" flex items-center space-x-7">
-            {movies.twoHourMovies.map((movie) => (
-              <div key={movie.id}>
-                <MovieCard movieInfo={movie} />
-              </div>
-            ))}
+          <div className="pt-8 pb-3 w-full overflow-x-scroll custom-scrollbar">
+            <div className=" flex items-center space-x-7">
+              {movies.twoHourMovies.map((movie) => (
+                <div key={movie.id}>
+                  <MovieCard movieInfo={movie} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       )}
 
       {movies.threeHourMovies.length > 0 && (
@@ -195,7 +193,6 @@ const Home = () => {
         </section>
       )}
 
-      
       {movies.upcomingMovies.length > 0 && (
         <section className="w-full px-6 py-10">
           <h2 className="text-2xl font-medium">Upcoming Screenings</h2>
@@ -292,6 +289,89 @@ const Home = () => {
             alt="Movie Posters"
             className="mix-blend-multiply"
           />
+        </div>
+      </section>
+
+      {/* Custom Movie Experience Section */}
+      <section className="w-full px-20 py-24">
+        <div className="flex flex-col md:flex-row items-center gap-10">
+          <div className="flex-1">
+            <h2 className="text-4xl leading-tight mb-6">
+              Create Your Own Movie Experience
+            </h2>
+            <p className="text-lg text-gray-700 mb-8">
+              Not finding what you're looking for? Host a private screening with
+              your favorite films and enjoy a personalized cinema experience!
+            </p>
+            <div className="space-y-4">
+              <div className="flex items-start space-x-4">
+                <div className="mt-1 w-8 h-8 rounded-full bg-gradient-to-r from-fuchsia-500 to-blue-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+                  1
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    Choose Your Movies
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Select from our library
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="mt-1 w-8 h-8 rounded-full bg-gradient-to-r from-fuchsia-500 to-blue-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+                  2
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    Pick Your Time
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Available 7 days a week, morning to midnight
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="mt-1 w-8 h-8 rounded-full bg-gradient-to-r from-fuchsia-500 to-blue-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+                  3
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    Enjoy with Friends
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Cozy private theatre, your rules
+                  </p>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                navigate("/book?custom=true");
+              }}
+              className="mt-8 px-8 py-3 rounded-xl bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
+            >
+              Plan Your Private Screening
+            </button>
+          </div>
+          <div className="flex-1">
+            <div className="relative">
+              <div className="absolute -inset-4 bg-gradient-to-r from-fuchsia-500/20 to-blue-500/20 rounded-2xl rotate-1"></div>
+              <img
+                src="https://bnbtplstorageaccount.blob.core.windows.net/homepage/theater1.jpg"
+                alt="Private movie theater"
+                className="relative rounded-xl shadow-2xl w-full h-80 object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="w-full h-[500px] my-24 relative">
+        <img src={movieBanner} className="w-full h-full object-cover brightness-50" />
+        <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center space-y-6">
+          <h1 className="text-8xl font-bold text-white">Movies of Every Genre</h1>
+          <p className="text-2xl text-white">Choose from our library of classic and cult films.</p>
+          <button onClick={() => navigate("/browse")} className="mt-10 px-10 py-3 rounded-lg  bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white text-sm font-bold transition cursor-pointer">Browse Movies</button>
         </div>
       </section>
 
