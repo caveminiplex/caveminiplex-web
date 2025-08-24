@@ -24,7 +24,18 @@ export type SlotType = {
   noOfPerons: number;
   startTime: TimeType | null;
   endTime: TimeType | null;
+  own_duration: string | null;
 };
+
+const DURATIONS: string[] = [
+  "1h",
+  "1h 30m",
+  "2h",
+  "2h 30m",
+  "3h",
+  "3h 30m",
+  "4h",
+];
 
 const SLOTS: TimeType[] = [
   {
@@ -69,6 +80,7 @@ const PickingSection = ({
   const [selectedDate, setSelectedDate] = useState<DateType | null>(null);
   const [selectedAudi, setSelectedAudi] = useState<number | null>(null);
   const [noOfPersons, setNoOfPerons] = useState<number>(2);
+  const [selectedDuration, setSelectedDuration] = useState<string | null>(null)
   const [startTime, setStartTime] = useState<TimeType | null>(null);
 
   const selectDate = (date: DateType) => {
@@ -94,8 +106,9 @@ const PickingSection = ({
       noOfPerons: noOfPersons,
       startTime: startTime,
       endTime: startTime ? addTimes(startTime, totalTime) : null,
+      own_duration: selectedDuration,
     });
-  }, [selectedDate, selectedAudi, startTime, noOfPersons]);
+  }, [selectedDate, selectedAudi, startTime, noOfPersons, selectedDuration]);
 
   return (
     <div className="w-full h-full pr-4 border-r border-neutral-300 relative">
@@ -154,6 +167,30 @@ const PickingSection = ({
           }}
           className="text-center border-b border-neutral-600 outline-none w-[30%]"
         />
+      </div>
+
+      {/* Choose duration */}
+      <div className="flex flex-col items-center justify-center py-4 px-5 space-y-6">
+        <h3 className="font-bold">Choose a duration</h3>
+
+        <div className="flex items-center justify-center flex-wrap gap-7">
+          {DURATIONS.map((duration, index) => (
+            <div
+        
+              key={index}
+              className={`text-[10px] px-3 py-2 rounded-sm  cursor-pointer transition-all hover:scale-105 ${selectedDuration === duration?"bg-blue-600 text-white ":"bg-fuchsia-100"}`}
+              onClick={() => {
+
+                if(selectedDuration === duration)
+                    setSelectedDuration(null)
+                else
+                    setSelectedDuration(duration)
+              }}
+            >
+              {duration}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Available timings */}

@@ -22,7 +22,7 @@ const MovieCard = ({
         backgroundImage: `url(${movieInfo.poster_url})`,
       }}
     >
-      <div className="absolute bottom-0 w-full right-0 py-3 px-3 text-start backdrop-blur-xs space-y-1 rounded-b-lg">
+      <div className="absolute bottom-0 w-full right-0 py-3 px-3 text-start backdrop-blur-xs space-y-1 rounded-b-lg backdrop-brightness-30">
         <h2
           className="text-white font-bold"
           style={{

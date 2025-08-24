@@ -46,58 +46,52 @@ const Slideshow = () => {
   );
 };
 
-export const fetchMovies = async (pageno: number): Promise<Movie[]> => {
-  const url = `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${pageno}"`;
 
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
-    },
-  };
-
-  const movies: Movie[] = [];
-
-  await fetch(url, options)
-    .then(async (r) => {
-      const data = await r.json();
-
-      for (let i = 0; i <= 10; i++) {
-        movies.push({
-          id: data.results[i].id,
-          duration: "2h 4m",
-          poster_url: `https://image.tmdb.org/t/p/original${data.results[i].poster_path}`,
-          state: "current",
-          title: data.results[i].title,
-        });
-      }
-    })
-    .catch((err) => console.error(err));
-
-  return movies;
+export const fetchMovies = async (state: string, duration?: string) => {
+  const res = await userApi.get(
+    `/movies?state=${state}${duration ? `&duration=${duration}` : ""}`
+  );
+  const data = res.data.data;
+  return data;
 };
+
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const [currentMovies, setCurrentMovies] = useState<Movie[]>([]);
-  const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<{
+    currentMovies: Movie[];
+    upcomingMovies: Movie[];
+    oneHourMovies: Movie[];
+    twoHourMovies: Movie[];
+    threeHourMovies: Movie[];
+  }>({
+    currentMovies: [],
+    upcomingMovies: [],
+    oneHourMovies: [],
+    twoHourMovies: [],
+    threeHourMovies: [],
+  });
+
   const { setLoading } = useLoading();
 
-  const fetchCurrentMovies = async () => {
-    const res = await userApi.get("/movies");
-    const data = res.data.data;
-    return data;
-  };
-
+  
   const fetchAllMovies = async () => {
     setLoading(true);
-    const currentMovies = await fetchCurrentMovies();
-    const upcomingMovies = await fetchMovies(2);
+    const currentMovies = await fetchMovies("NOW_SHOWING");
+    const upcomingMovies = await fetchMovies("COMING_SOON");
+    const oneHourMovies = await fetchMovies("OTHER", "50m-1h 30m");
+    const twoHourMovies = await fetchMovies("OTHER", "1h 45m-2h 30m");
+    const threeHourMovies = await fetchMovies("OTHER", "2h 45m-3h 30m");
 
-    setCurrentMovies(currentMovies);
-    setUpcomingMovies(upcomingMovies);
+    setMovies({
+      currentMovies,
+      upcomingMovies,
+      oneHourMovies,
+      twoHourMovies: twoHourMovies,
+      threeHourMovies: threeHourMovies,
+    });
+
     setLoading(false);
   };
 
@@ -134,11 +128,12 @@ const Home = () => {
         </div>
       </div>
 
+      {movies.currentMovies.length > 0 && (
       <section className="w-full px-6 py-10">
         <h2 className="text-2xl font-medium">Currently Showing</h2>
 
         <div className="pt-8 pb-3 w-full flex items-center gap-6 flex-wrap">
-          {currentMovies.map((movie) => (
+          {movies.currentMovies.map((movie) => (
             <div
               key={movie.id}
               onClick={() => {
@@ -150,13 +145,15 @@ const Home = () => {
           ))}
         </div>
       </section>
+      )}
 
+      {movies.oneHourMovies.length > 0 && (
       <section className="w-full px-6 py-10">
-        <h2 className="text-2xl font-medium">Upcoming Screenings</h2>
+        <h2 className="text-2xl font-medium">One Hour Movies</h2>
 
         <div className="pt-8 pb-3 w-full overflow-x-scroll custom-scrollbar">
           <div className=" flex items-center space-x-7">
-            {upcomingMovies.map((movie) => (
+            {movies.oneHourMovies.map((movie) => (
               <div key={movie.id}>
                 <MovieCard movieInfo={movie} />
               </div>
@@ -164,6 +161,56 @@ const Home = () => {
           </div>
         </div>
       </section>
+      )}
+
+      {movies.twoHourMovies.length > 0 && (
+      <section className="w-full px-6 py-10">
+        <h2 className="text-2xl font-medium">Two Hour Movies</h2>
+
+        <div className="pt-8 pb-3 w-full overflow-x-scroll custom-scrollbar">
+          <div className=" flex items-center space-x-7">
+            {movies.twoHourMovies.map((movie) => (
+              <div key={movie.id}>
+                <MovieCard movieInfo={movie} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      )}
+
+      {movies.threeHourMovies.length > 0 && (
+        <section className="w-full px-6 py-10">
+          <h2 className="text-2xl font-medium">Three Hour Movies</h2>
+
+          <div className="pt-8 pb-3 w-full overflow-x-scroll custom-scrollbar">
+            <div className=" flex items-center space-x-7">
+              {movies.threeHourMovies.map((movie) => (
+                <div key={movie.id}>
+                  <MovieCard movieInfo={movie} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      
+      {movies.upcomingMovies.length > 0 && (
+        <section className="w-full px-6 py-10">
+          <h2 className="text-2xl font-medium">Upcoming Screenings</h2>
+
+          <div className="pt-8 pb-3 w-full overflow-x-scroll custom-scrollbar">
+            <div className=" flex items-center space-x-7">
+              {movies.upcomingMovies.map((movie) => (
+                <div key={movie.id}>
+                  <MovieCard movieInfo={movie} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="w-full px-16 py-20  h-[500px] flex flex-1 items-center">
         <div className="flex-[0.5]">

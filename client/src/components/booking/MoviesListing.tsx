@@ -3,26 +3,26 @@ import type { Movie } from "../../types/movie.type";
 import MovieCard from "../MovieCard";
 import { calculateTotalTime } from "../../util/time.util";
 import { useNavigate } from "react-router-dom";
-import userApi from "../../apis/userApi";
+import { fetchMovies } from "../../pages/Home";
 
 const MoviesListing = ({
   selectedMovies,
   setSelectedMovies,
   setTotalTime,
+  ownDuration,
 }: {
   setTotalTime: React.Dispatch<React.SetStateAction<string>>;
   selectedMovies: Movie[];
   setSelectedMovies: React.Dispatch<React.SetStateAction<Movie[]>>;
+  ownDuration: string | null;
 }) => {
   const navigate = useNavigate();
 
   const [currentMovies, setCurrentMovies] = useState<Movie[]>([]);
 
  const fetchCurrentMovies = async () => {
-    const res = await userApi.get("/movies");
-    const data = res.data.data;
-
-    setCurrentMovies(data)
+   const data = await fetchMovies("NOW_SHOWING")
+   setCurrentMovies(data)
   };
 
   useEffect(() => {
@@ -30,10 +30,14 @@ const MoviesListing = ({
   }, []);
 
   useEffect(() => {
+
+    if(ownDuration)
+        setTotalTime(ownDuration)
+    else
     setTotalTime(
       calculateTotalTime(selectedMovies.map((movie) => movie.duration))
     );
-  }, [selectedMovies]);
+  }, [selectedMovies, ownDuration]);
 
   const selectMovie = (movie: Movie) => {
     if (selectedMovies.map((movie) => movie.id).includes(movie.id)) {
@@ -59,7 +63,7 @@ const MoviesListing = ({
           Browse movies
         </button>
       </div>
-      <div className="grid grid-cols-2 gap-5">
+      <div className={`grid grid-cols-2 gap-5 ${ownDuration === "1h" && "blur-[2px]"}`}>
         {currentMovies.map((movie) => (
           <div
             className={`w-fit h-fit relative`}

@@ -17,10 +17,12 @@ const PriceSection = ({
   return (
     <div className="w-full h-full flex flex-1 flex-col justify-between">
       <div className="flex-[0.95] w-full h-full">
-        <div className=" w-full bg-gradient-to-r from-blue-100 from-[20%] to-transparent px-7 py-5 rounded-lg">
-          <h2 className="text-2xl text-neutral-800 font-semibold">
+        <div className=" w-full bg-gradient-to-r from-blue-100 from-[20%] to-transparent px-7 py-4 rounded-lg space-y-2">
+          <h2 className="text-xl text-neutral-800 font-semibold">
             Total time: {totalTime}
           </h2>
+
+          <p className="text-xs text-neutral-600">Location: Delhi</p>
         </div>
 
         <div className="mt-6 w-full">

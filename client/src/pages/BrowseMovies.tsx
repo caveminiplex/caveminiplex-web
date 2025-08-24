@@ -57,7 +57,19 @@ const BrowseMovies = () => {
 
       {/* Loading */}
       {loading && (
-        <p className="text-center text-gray-600 text-xl">Loading movies...</p>
+        <p className="text-center text-gray-600 text-xl mt-10">Loading movies...</p>
+      )}
+
+      {/* No results */}
+      {!loading && query.trim().length > 0 && movies.length === 0 && (
+        <div className="text-center mt-10 space-y-2">
+          <p className="text-center text-gray-600 text-xl">
+            No movies found for "{query}"
+          </p>
+          <p className="text-center text-gray-400 ">
+            Try sometime later
+          </p>
+        </div>
       )}
 
       {/* Movie Results */}
@@ -68,13 +80,6 @@ const BrowseMovies = () => {
           ))}
         </div>
       </div>
-
-      {/* No results */}
-      {!loading && query.trim().length > 0 && movies.length === 0 && (
-        <p className="text-center text-gray-600 text-xl mt-10">
-          No movies found for "{query}"
-        </p>
-      )}
     </div>
   );
 };

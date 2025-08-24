@@ -73,7 +73,7 @@ const Timebox = ({
 
       <div
         ref={divRef}
-        className={`text-xs px-3 py-2 rounded-sm  ${
+        className={`text-[10px] px-3 py-2 rounded-sm  ${
           isSelected ? "bg-blue-600 text-white " : "bg-green-300 text-black"
         } cursor-pointer transition-all hover:scale-105`}
         onClick={() => {

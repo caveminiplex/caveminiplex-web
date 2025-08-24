@@ -43,6 +43,7 @@ const BookingPage = () => {
             setTotalTime={setTotalTime}
             selectedMovies={selectedMovies}
             setSelectedMovies={setSelectedMovies}
+            ownDuration={slotInfo?slotInfo.own_duration:null}
           />
         </section>
 
