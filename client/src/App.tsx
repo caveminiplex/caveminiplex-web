@@ -15,6 +15,7 @@ import Users from "./admin/pages/Users";
 import Snacks from "./admin/pages/Snacks";
 import TicketPage from "./pages/TicketPage";
 import { LocationProvider } from "./contexts/LocationContext";
+import About from "./pages/About";
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
           <Route path="/browse" element={<BrowseMovies />} />
           <Route path="/movies" element={<AllMovies />} />
           <Route path="/ticket/:id" element={<TicketPage />} />
+          <Route path="/about" element={<About />} />
         </Route>
 
         {/* ADMIN ROUTES */}
