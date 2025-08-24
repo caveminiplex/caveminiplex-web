@@ -64,6 +64,7 @@ const BookingPage = () => {
             selectedMovies={selectedMovies}
             setIsPaymentModalOpen={setIsPaymentModalOpen}
             noOfPersons={slotInfo ? slotInfo.noOfPerons : 2}
+            ownDuration={slotInfo?slotInfo.own_duration:null}
           />
         </section>
       </div>

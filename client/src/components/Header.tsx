@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useLocation } from "../contexts/LocationContext";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [selectedLocation, setSelectedLocation] = useState("Sadar Bazar, Agra");
+  const { selectedLocation, setSelectedLocation } = useLocation();
 
   return (
     <header className="flex items-center justify-between px-7 py-5 bg-white">

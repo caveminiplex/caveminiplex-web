@@ -110,6 +110,7 @@ const PickingSection = ({
     });
   }, [selectedDate, selectedAudi, startTime, noOfPersons, selectedDuration]);
 
+
   return (
     <div className="w-full h-full pr-4 border-r border-neutral-300 relative">
       {/* Dates */}

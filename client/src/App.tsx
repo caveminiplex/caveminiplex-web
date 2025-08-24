@@ -14,10 +14,12 @@ import Movies from "./admin/pages/Movies";
 import Users from "./admin/pages/Users";
 import Snacks from "./admin/pages/Snacks";
 import TicketPage from "./pages/TicketPage";
+import { LocationProvider } from "./contexts/LocationContext";
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <LocationProvider>
+      <BrowserRouter>
       <Routes>
         {/* USER ROUTES */}
 
@@ -44,7 +46,8 @@ const App = () => {
           <Route path="/admin/control/v1/snacks" element={<Snacks />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+    </LocationProvider>
   );
 };
 

@@ -1,5 +1,19 @@
 import type { Movie } from "../../types/movie.type";
 import { calculatePrice, roundOffCost } from "../../util/time.util";
+import { useLocation } from "../../contexts/LocationContext";
+import toast from "react-hot-toast";
+
+
+
+export const OwnDurationPricing = {
+  "1h": 500,
+  "1h 30m": 600,
+  "2h": 700,
+  "2h 30m": 900,
+  "3h": 1200,
+  "3h 30m": 1300,
+  "4h 30m": 1400,
+}
 
 const PriceSection = ({
   isMovieSlotSelected,
@@ -7,13 +21,17 @@ const PriceSection = ({
   selectedMovies,
   setIsPaymentModalOpen,
   noOfPersons,
+  ownDuration,
 }: {
   isMovieSlotSelected: boolean;
   totalTime: string;
   selectedMovies: Movie[];
   setIsPaymentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  noOfPersons:number;
+  noOfPersons: number;
+  ownDuration: string | null;
 }) => {
+  const { selectedLocation } = useLocation();
+
   return (
     <div className="w-full h-full flex flex-1 flex-col justify-between">
       <div className="flex-[0.95] w-full h-full">
@@ -22,7 +40,9 @@ const PriceSection = ({
             Total time: {totalTime}
           </h2>
 
-          <p className="text-xs text-neutral-600">Location: Delhi</p>
+          <p className="text-xs text-neutral-600">
+            Location: {selectedLocation}
+          </p>
         </div>
 
         <div className="mt-6 w-full">
@@ -42,36 +62,59 @@ const PriceSection = ({
               </thead>
 
               <tbody>
-                {selectedMovies.map((movie) => (
+                {!ownDuration && selectedMovies.map((movie) => (
                   <tr key={movie.id}>
                     <td>{movie.title}</td>
                     <td className="text-center">{movie.duration}</td>
                     <td className="text-center">₹ 350</td>
                     <td className="text-end">
-                      ₹ {calculatePrice(movie.duration,0)}
+                      ₹ {calculatePrice(movie.duration, 0)}
                     </td>
                   </tr>
                 ))}
-
                 {
-                    noOfPersons > 2 && (
-                         <tr key={"per-person-cost"}>
+                  ownDuration == "1h" && (
+                    <tr key={"own-duration"}>
+                      <td>Songs</td>
+                      <td className="text-center">{ownDuration}</td>
+                      <td className="text-center"></td>
+                      <td className="text-end">
+                        ₹ {OwnDurationPricing[ownDuration as keyof typeof OwnDurationPricing]}
+                      </td>
+                    </tr>
+                  )
+                }
+                
+                {
+                  ownDuration && ownDuration != "1h" && selectedMovies.map((movie) => (
+                    <tr key={movie.id}>
+                      <td>(CT) {movie.title}</td>
+                      <td className="text-center">{movie.duration}</td>
+                      <td className="text-center"></td>
+                      <td className="text-end">
+                        ₹ {OwnDurationPricing[ownDuration as keyof typeof OwnDurationPricing]}
+                      </td>
+                    </tr>
+                  ))
+                }
+
+                {noOfPersons > 2 && (
+                  <tr key={"per-person-cost"}>
                     <td>Additional Person Charge</td>
                     <td></td>
                     <td>₹ 100</td>
-                    <td className="text-end">
-                      ₹ {(noOfPersons-2)*100}
-                    </td>
+                    <td className="text-end">₹ {(noOfPersons - 2) * 100}</td>
                   </tr>
-                    )
-                }
+                )}
 
                 {selectedMovies.length != 0 && (
                   <tr className="border-t border-neutral-300 bg-white">
                     <td className="font-semibold px-3">Total</td>
                     <td></td>
                     <td></td>
-                    <td className="text-end">₹ {roundOffCost(calculatePrice(totalTime, noOfPersons))}</td>
+                    <td className="text-end">
+                      ₹ {roundOffCost(calculatePrice(totalTime, noOfPersons))}
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -117,6 +160,10 @@ const PriceSection = ({
           }`}
           onClick={() => {
             if (isMovieSlotSelected) setIsPaymentModalOpen(true);
+            else
+              toast("Please select a movie slot", {
+                icon: "🎟️",
+              });
           }}
         >
           Pay Now ₹{roundOffCost(calculatePrice(totalTime, noOfPersons))}

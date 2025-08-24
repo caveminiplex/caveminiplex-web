@@ -6,7 +6,7 @@ const Layout = () => {
 
   return (
     <>
-    <Toaster position="bottom-center" reverseOrder={false} />
+    <Toaster position="top-center" reverseOrder={false} />
     <div className="w-full h-screen flex flex-1 flex-col overflow-hidden relative">
       <div className="flex-[0.09] w-full h-full">
         <Header />
