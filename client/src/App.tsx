@@ -13,6 +13,7 @@ import Bookings from "./admin/pages/Bookings";
 import Movies from "./admin/pages/Movies";
 import Users from "./admin/pages/Users";
 import Snacks from "./admin/pages/Snacks";
+import TicketPage from "./pages/TicketPage";
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
           <Route path="/book" element={<BookingPage />} />
           <Route path="/browse" element={<BrowseMovies />} />
           <Route path="/movies" element={<AllMovies />} />
+          <Route path="/ticket/:id" element={<TicketPage />} />
         </Route>
 
         {/* ADMIN ROUTES */}

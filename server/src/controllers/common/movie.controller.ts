@@ -3,7 +3,7 @@ import asyncHandler from "../../utils/asyncHandler";
 import { StatusCodes } from "http-status-codes";
 import { tmdbCall } from "../../utils/tmdbAPI";
 import { dynamoDocClient } from "../../db/db";
-import { ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { Movie } from "../../db/types/movie.type";
 
 export const searchMovie = asyncHandler(async (req: Request, res: Response) => {
@@ -125,3 +125,30 @@ export const fetchAddedMovies = asyncHandler(
     }
   }
 );
+
+
+export const getMovieById = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const result = await dynamoDocClient.send(
+      new GetCommand({
+        TableName: "movies",
+        Key: { id: Number(id) },
+      })
+    );
+
+    const movie = (result.Item || {}) as Movie;
+    
+    res.status(StatusCodes.OK).json({
+      message: "Fetched movie successfully",
+      data: movie,
+    });
+
+
+  } catch (err) {
+    console.error("Error fetching movie:", err);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Failed to fetch movie" });
+  }
+});

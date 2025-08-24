@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { fetchAddedMovies, searchMovie } from "../../../controllers/common/movie.controller";
+import { fetchAddedMovies, getMovieById, searchMovie } from "../../../controllers/common/movie.controller";
 import { login } from "../../../controllers/user/login.controller";
 import { authMiddleware } from "../../../middlewares/auth.middleware";
 import { AUTH_ROLES } from "../../../utils/roles";
 import { handleLogout } from "../../../controllers/handleLogout.controller";
 import { signup } from "../../../controllers/user/signup.controller";
-import { bookTicket } from "../../../controllers/user/ticket.controller";
+import { bookTicket, getBookingById } from "../../../controllers/user/ticket.controller";
 import { fetchAvailableSlots } from "../../../controllers/user/slots.controller";
 
 const router = Router();
@@ -14,6 +14,8 @@ const router = Router();
 router.route("/movie/search").get(searchMovie);
 router.route("/movies").get(fetchAddedMovies)
 router.route("/slots").get(fetchAvailableSlots);
+router.route("/booking/:id").get(getBookingById);
+router.route("/movie/:id").get(getMovieById);
 
 // POST ENDPOINTS
 router.route("/login").post(login);
