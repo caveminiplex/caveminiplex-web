@@ -4,7 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import { tmdbCall } from "../../utils/tmdbAPI";
 import { Movie } from "../../db/types/movie.type";
 import { dynamoDocClient } from "../../db/db";
-import { DeleteCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DeleteCommand, PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 
 export const addMovie = asyncHandler(async (req: Request, res: Response) => {
   const movieId = req.body.movieId;
@@ -18,6 +18,24 @@ export const addMovie = asyncHandler(async (req: Request, res: Response) => {
   const url = `https://api.themoviedb.org/3/movie/${movieId}`;
 
   try {
+    // Check if movie already exists
+    const existingMovie = await dynamoDocClient.send(
+      new GetCommand({
+        TableName: "movies",
+        Key: { id: Number(movieId) },
+      })
+    );
+
+    if (existingMovie.Item) {
+      return res
+        .status(StatusCodes.CONFLICT)
+        .json({ 
+          error: "Movie already exists",
+          message: `Movie with ID ${movieId} is already added to the system`,
+          existingMovie: existingMovie.Item
+        });
+    }
+
     const data = await tmdbCall(url);
 
     if (!data) {
@@ -52,7 +70,7 @@ export const addMovie = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
-const removeMovie = asyncHandler(async (req: Request, res: Response) => {
+export const removeMovie = asyncHandler(async (req: Request, res: Response) => {
   const movieId = req.body.movieId;
 
   if (!movieId) {
@@ -64,7 +82,7 @@ const removeMovie = asyncHandler(async (req: Request, res: Response) => {
   try {
     await dynamoDocClient.send(
       new DeleteCommand({
-        TableName: "Movies",
+        TableName: "movies",
         Key: { id: Number(movieId) },
       })
     );
@@ -73,6 +91,7 @@ const removeMovie = asyncHandler(async (req: Request, res: Response) => {
       message: `Movie with ID ${movieId} removed successfully`,
     });
   } catch (err) {
+    console.log(err)
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Failed to remove movie" });

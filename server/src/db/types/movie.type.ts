@@ -3,5 +3,5 @@ export interface Movie {
   title: string;
   duration: string;
   poster_url: string;
-  state: string; // NOW_SHOWING, COMING_SOON
+  state: string; // NOW_SHOWING, COMING_SOON, OTHER
 }

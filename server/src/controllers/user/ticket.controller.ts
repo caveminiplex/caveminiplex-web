@@ -13,7 +13,10 @@ export const bookTicket = asyncHandler(async (req: Request, res: Response) => {
   }
 
   try {
-  } catch (e) {}
+    
+  } catch (e) {
+    console.log(e);
+  }
 
   res.status(StatusCodes.OK).json({ message: "Movie booked successfully" });
 });

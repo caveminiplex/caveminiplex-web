@@ -35,9 +35,56 @@ export const searchMovie = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+// Helper function to parse duration string to minutes
+const parseDurationToMinutes = (duration: string): number => {
+  const regex = /(?:(\d+)h)?\s*(?:(\d+)m)?/;
+  const match = duration.match(regex);
+  
+  if (!match) return 0;
+  
+  const hours = parseInt(match[1] || '0', 10);
+  const minutes = parseInt(match[2] || '0', 10);
+  
+  return hours * 60 + minutes;
+};
+
+// Helper function to parse duration range
+const parseDurationRange = (rangeStr: string): { min: number; max: number } | null => {
+  // Check if it's a range (contains dash)
+  if (rangeStr.includes('-')) {
+    const [minStr, maxStr] = rangeStr.split('-').map(s => s.trim());
+    const min = parseDurationToMinutes(minStr);
+    const max = parseDurationToMinutes(maxStr);
+    
+    if (min > 0 && max > 0 && min <= max) {
+      return { min, max };
+    }
+  }
+  
+  // If not a range, treat as single duration with 15-minute tolerance
+  const duration = parseDurationToMinutes(rangeStr);
+  if (duration > 0) {
+    return { min: duration - 15, max: duration + 15 };
+  }
+  
+  return null;
+};
+
+// Helper function to check if duration matches filter range
+const matchesDurationFilter = (movieDuration: string, filterDuration: string): boolean => {
+  const movieMinutes = parseDurationToMinutes(movieDuration);
+  const range = parseDurationRange(filterDuration);
+  
+  if (!range || movieMinutes <= 0) return false;
+  
+  return movieMinutes >= range.min && movieMinutes <= range.max;
+};
+
 export const fetchAddedMovies = asyncHandler(
   async (req: Request, res: Response) => {
     try {
+      const { duration, state } = req.query;
+
       const result = await dynamoDocClient.send(
         new ScanCommand({
           TableName: "movies",
@@ -45,11 +92,30 @@ export const fetchAddedMovies = asyncHandler(
       );
 
       // If no items found, return empty array
-      const movies = result.Items || [];
+      let movies = (result.Items || []) as Movie[];
+
+      // Apply filters if provided
+      if (duration && typeof duration === 'string') {
+        movies = movies.filter(movie => 
+          matchesDurationFilter(movie.duration, duration)
+        );
+      }
+
+      if (state && typeof state === 'string') {
+        const stateFilter = state.toUpperCase();
+        movies = movies.filter(movie => 
+          movie.state.toUpperCase() === stateFilter
+        );
+      }
 
       res.status(StatusCodes.OK).json({
         message: "Fetched movies successfully",
         data: movies,
+        filters: {
+          duration: duration || null,
+          state: state || null,
+          totalResults: movies.length
+        }
       });
     } catch (err) {
       console.error("Error fetching movies:", err);
