@@ -9,7 +9,9 @@ const Snacks = () => {
         </button>
       </div>
 
-      <div className="mt-10"></div>
+      <div className="mt-10">
+        <p className="text-neutral-500">Coming soon</p>
+      </div>
     </div>
   );
 };

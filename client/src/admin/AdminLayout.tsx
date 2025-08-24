@@ -1,6 +1,7 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Header from "./components/Header";
 import { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 
 const TABS = ["Bookings", "Movies", "Users", "Snacks"];
 
@@ -23,6 +24,8 @@ const AdminLayout = () => {
   }, [location]);
 
   return (
+    <>
+    <Toaster position="top-center" reverseOrder={false} />
     <div className="w-full h-screen flex flex-1 flex-col overflow-hidden relative">
       <div className="flex-[0.09] w-full h-full">
         <Header />
@@ -55,6 +58,7 @@ const AdminLayout = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
