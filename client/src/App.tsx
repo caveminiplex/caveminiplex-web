@@ -16,38 +16,40 @@ import Snacks from "./admin/pages/Snacks";
 import TicketPage from "./pages/TicketPage";
 import { LocationProvider } from "./contexts/LocationContext";
 import About from "./pages/About";
+import { Analytics } from "@vercel/analytics/next";
 
 const App = () => {
   return (
     <LocationProvider>
+      <Analytics />
+
       <BrowserRouter>
-      <Routes>
-        {/* USER ROUTES */}
+        <Routes>
+          {/* USER ROUTES */}
 
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/test" element={<Loading />} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/test" element={<Loading />} />
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/book" element={<BookingPage />} />
+            <Route path="/browse" element={<BrowseMovies />} />
+            <Route path="/movies" element={<AllMovies />} />
+            <Route path="/ticket/:id" element={<TicketPage />} />
+            <Route path="/about" element={<About />} />
+          </Route>
 
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/book" element={<BookingPage />} />
-          <Route path="/browse" element={<BrowseMovies />} />
-          <Route path="/movies" element={<AllMovies />} />
-          <Route path="/ticket/:id" element={<TicketPage />} />
-          <Route path="/about" element={<About />} />
-        </Route>
+          {/* ADMIN ROUTES */}
+          <Route path="/admin/control/v1/login" element={<AdminLogin />} />
 
-        {/* ADMIN ROUTES */}
-        <Route path="/admin/control/v1/login" element={<AdminLogin />} />
-
-        <Route element={<AdminLayout />}>
-          <Route path="/admin/control/v1/bookings" element={<Bookings />} />
-          <Route path="/admin/control/v1/movies" element={<Movies />} />
-          <Route path="/admin/control/v1/users" element={<Users />} />
-          <Route path="/admin/control/v1/snacks" element={<Snacks />} />
-        </Route>
-      </Routes>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin/control/v1/bookings" element={<Bookings />} />
+            <Route path="/admin/control/v1/movies" element={<Movies />} />
+            <Route path="/admin/control/v1/users" element={<Users />} />
+            <Route path="/admin/control/v1/snacks" element={<Snacks />} />
+          </Route>
+        </Routes>
       </BrowserRouter>
     </LocationProvider>
   );
