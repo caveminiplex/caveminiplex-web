@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DAYS, getUpcomingDays, MONTHS } from "../../../util/time.util";
 import type { DateType } from "../../../components/booking/PickingSection";
 import { isAudiAvailable } from "../../../util/slot.util";
@@ -12,7 +12,7 @@ const AddBookingModal = ({
 }: {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  actionFunc: (movieId: string, state: string) => Promise<void>;
+  actionFunc: () => Promise<void>;
 }) => {
   const [selectedDate, setSelectedDate] = useState<DateType>({
     month: MONTHS[new Date().getMonth()],
@@ -26,6 +26,15 @@ const AddBookingModal = ({
   const [availableSlots, setAvailableSlots] = useState<AvailableSlotType[]>([]);
 
   const [selectedAudi, setSelectedAudi] = useState<number>(0);
+
+
+  const fetchAvailableSlots = async () => {
+    setAvailableSlots([])
+  }
+
+  useEffect(() => {
+    fetchAvailableSlots()
+  },[])
 
   if (!isOpen) return null;
 
@@ -63,7 +72,10 @@ const AddBookingModal = ({
               <div className="flex items-center space-x-4">
                 {getUpcomingDays(20).map((upcoming, index) => (
                   <div
-                    onClick={() => {}}
+                    onClick={() => {
+
+                      setSelectedDate(upcoming)
+                    }}
                     className={`flex flex-col items-center justify-center px-5 py-3 rounded-lg  ${
                       selectedDate?.date == upcoming.date
                         ? "bg-blue-600 text-white"
@@ -135,7 +147,7 @@ const AddBookingModal = ({
 
         <div className="w-full h-full flex-[0.1] flex items-center justify-between">
           <div></div>
-          <button className="w-fit px-7 py-3 rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white cursor-pointer transition">
+          <button onClick={() => {actionFunc()}} className="w-fit px-7 py-3 rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white cursor-pointer transition">
             Book Now
           </button>
         </div>
