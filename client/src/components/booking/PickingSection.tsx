@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
 import {
   addTimes,
-  getUpcoming10Days,
+  DAYS,
+  getUpcomingDays,
+  MONTHS,
   timeObjToStr,
 } from "../../util/time.util";
 import Timebox from "../Timebox";
+import { useLocation } from "../../contexts/LocationContext";
+import userApi from "../../apis/userApi";
+import { formatDate } from "../../util/date.util";
+import type { AvailableSlotType } from "../../types/booking.type";
+import { isAudiAvailable, isTimeAvailableForAudi } from "../../util/slot.util";
+import { toast } from "react-hot-toast";
 
 export type DateType = {
   month: string;
@@ -68,6 +76,31 @@ const SLOTS: TimeType[] = [
     min: 0,
     type: "PM",
   },
+  {
+    hour: 3,
+    min: 0,
+    type: "PM",
+  },
+  {
+    hour: 4,
+    min: 0,
+    type: "PM",
+  },
+  {
+    hour: 5,
+    min: 0,
+    type: "PM",
+  },
+  {
+    hour: 6,
+    min: 0,
+    type: "PM",
+  },
+  {
+    hour: 7,
+    min: 0,
+    type: "PM",
+  },
 ];
 
 const PickingSection = ({
@@ -77,24 +110,40 @@ const PickingSection = ({
   totalTime: string;
   setSlotInfo: React.Dispatch<React.SetStateAction<SlotType | null>>;
 }) => {
-  const [selectedDate, setSelectedDate] = useState<DateType | null>(null);
-  const [selectedAudi, setSelectedAudi] = useState<number | null>(null);
+  const [selectedDate, setSelectedDate] = useState<DateType>({
+    month: MONTHS[new Date().getMonth()],
+    date: new Date().getDate(),
+    day: DAYS[new Date().getDay()],
+  });
+
+  const [selectedAudi, setSelectedAudi] = useState<number>(0);
+
   const [noOfPersons, setNoOfPerons] = useState<number>(2);
-  const [selectedDuration, setSelectedDuration] = useState<string | null>(null)
+  const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
   const [startTime, setStartTime] = useState<TimeType | null>(null);
+  const { selectedLocation, setSelectedLocation } = useLocation();
+  const [availableSlots, setAvailableSlots] = useState<AvailableSlotType[]>([]);
+
+  const fetchAvailableSlots = async () => {
+    const formattedDate = formatDate(selectedDate);
+
+    const res = await userApi.get(
+      `/slots?date=${formattedDate}&location=${selectedLocation}`
+    );
+
+    const data = res.data.data;
+
+    setAvailableSlots(data.auditoriums);
+  };
 
   const selectDate = (date: DateType) => {
-    if (selectedDate != null && selectedDate.date == date.date) {
-      setSelectedDate(null);
-    } else {
+    if (selectedDate.date != date.date) {
       setSelectedDate(date);
     }
   };
 
   const selectAudi = (audino: number) => {
-    if (selectedAudi != null && selectedAudi == audino) {
-      setSelectedAudi(null);
-    } else {
+    if (selectedAudi != audino) {
       setSelectedAudi(audino);
     }
   };
@@ -110,13 +159,23 @@ const PickingSection = ({
     });
   }, [selectedDate, selectedAudi, startTime, noOfPersons, selectedDuration]);
 
+  useEffect(() => {
+    setSelectedAudi(0);
+    setStartTime(null);
+    setSelectedDuration(null);
+    setNoOfPerons(2);
+  }, [selectedLocation]);
+
+  useEffect(() => {
+    fetchAvailableSlots();
+  }, [selectedDate, selectedLocation]);
 
   return (
     <div className="w-full h-full pr-4 border-r border-neutral-300 relative">
       {/* Dates */}
-      <div className="overflow-x-scroll pb-2 custom-scrollbar-thin">
+      <div className="overflow-x-scroll custom-scrollbar-thin pb-2">
         <div className="flex items-center space-x-4">
-          {getUpcoming10Days().map((upcoming, index) => (
+          {getUpcomingDays(10).map((upcoming, index) => (
             <div
               onClick={() => {
                 selectDate(upcoming);
@@ -136,17 +195,49 @@ const PickingSection = ({
         </div>
       </div>
 
+      <div className="my-4 flex items-center justify-center w-full">
+        <div className="flex items-center w-full">
+          <div
+            className={`w-full text-sm py-2 text-center rounded-l-lg border border-gray-300 cursor-pointer ${
+              selectedLocation === "Sadar Bazar, Agra"
+                ? "bg-gradient-to-b from-fuchsia-400 to-blue-500 text-white"
+                : "bg-transparent text-black"
+            }`}
+            onClick={() => setSelectedLocation("Sadar Bazar, Agra")}
+          >
+            Sadar Bazar, Agra
+          </div>
+          <div
+            className={`w-full  text-sm text-center py-2 border-r border-t border-b border-gray-300 rounded-r-lg cursor-pointer ${
+              selectedLocation === "Fatehbad Road, Agra"
+                ? "bg-gradient-to-b from-fuchsia-400 to-blue-500 text-white"
+                : "bg-transparent text-black"
+            }`}
+            onClick={() => setSelectedLocation("Fatehbad Road, Agra")}
+          >
+            Fatehbad Road, Agra
+          </div>
+        </div>
+      </div>
+
       {/* Rooms */}
-      <div className="flex items-center justify-center space-x-3 space-y-3 mt-7 flex-wrap">
+      <div className="flex items-center justify-center space-x-3 mt-7 flex-wrap">
         {[0, 1, 2, 3].map((audino) => (
           <div
             onClick={() => {
+              if (!isAudiAvailable(availableSlots, audino + 1)) {
+                console.log("not available")
+                toast.error(`No Slots Available in Audi ${audino + 1}`)
+                return;
+              }
               selectAudi(audino);
             }}
             className={`px-8 py-3  ${
               audino == selectedAudi
                 ? "bg-blue-600 text-white"
-                : "bg-fuchsia-100"
+                : isAudiAvailable(availableSlots, audino+1)
+                ? "bg-green-300"
+                : "bg-red-400"
             } rounded-lg shadow-2xs transition-all hover:scale-105 cursor-pointer`}
             key={audino}
           >
@@ -177,15 +268,15 @@ const PickingSection = ({
         <div className="flex items-center justify-center flex-wrap gap-7">
           {DURATIONS.map((duration, index) => (
             <div
-        
               key={index}
-              className={`text-[10px] px-3 py-2 rounded-sm  cursor-pointer transition-all hover:scale-105 ${selectedDuration === duration?"bg-blue-600 text-white ":"bg-fuchsia-100"}`}
+              className={`text-[10px] px-3 py-2 rounded-sm  cursor-pointer transition-all hover:scale-105 ${
+                selectedDuration === duration
+                  ? "bg-blue-600 text-white "
+                  : "bg-fuchsia-100"
+              }`}
               onClick={() => {
-
-                if(selectedDuration === duration)
-                    setSelectedDuration(null)
-                else
-                    setSelectedDuration(duration)
+                if (selectedDuration === duration) setSelectedDuration(null);
+                else setSelectedDuration(duration);
               }}
             >
               {duration}
@@ -195,20 +286,27 @@ const PickingSection = ({
       </div>
 
       {/* Available timings */}
-      <div className="flex flex-col items-center justify-center py-4 px-5 space-y-6">
+      <div className="flex flex-col items-center justify-center px-5 py-4 space-y-6">
         <h3 className="font-bold">Choose a time</h3>
 
-        <div className="flex items-center justify-center flex-wrap gap-7">
-          {SLOTS.map((time, index) => (
-            <Timebox
-              key={index}
-              time={time}
-              setTime={setStartTime}
-              isSelected={
-                time.hour == startTime?.hour && time.type === startTime.type
-              }
-            />
-          ))}
+        <div className="overflow-x-scroll custom-scrollbar-thin pb-2 w-full">
+          <div className="flex items-center space-x-5">
+            {SLOTS.map((time, index) => (
+              <Timebox
+                key={index}
+                time={time}
+                setTime={setStartTime}
+                isSelected={
+                  time.hour == startTime?.hour && time.type === startTime.type
+                }
+                isAvailable={isTimeAvailableForAudi(
+                  availableSlots,
+                  selectedAudi,
+                  time
+                )}
+              />
+            ))}
+          </div>
         </div>
 
         <p className="text-[11px] text-neutral-400 text-center">

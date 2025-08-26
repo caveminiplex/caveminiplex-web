@@ -25,6 +25,8 @@ const BookingPage = () => {
         amount={roundOffCost(
           calculatePrice(totalTime, slotInfo ? slotInfo.noOfPerons : 0)
         )}
+        slotInfo={slotInfo}
+        movieIds={selectedMovies.map((movie) => movie.id)}
       />
       {/* <AddOnModal isOpen={isAddOnModalOpen} setIsOpen={setAddOnModalOpen}/> */}
 
@@ -43,7 +45,7 @@ const BookingPage = () => {
             setTotalTime={setTotalTime}
             selectedMovies={selectedMovies}
             setSelectedMovies={setSelectedMovies}
-            ownDuration={slotInfo?slotInfo.own_duration:null}
+            ownDuration={slotInfo ? slotInfo.own_duration : null}
           />
         </section>
 
@@ -64,7 +66,7 @@ const BookingPage = () => {
             selectedMovies={selectedMovies}
             setIsPaymentModalOpen={setIsPaymentModalOpen}
             noOfPersons={slotInfo ? slotInfo.noOfPerons : 2}
-            ownDuration={slotInfo?slotInfo.own_duration:null}
+            ownDuration={slotInfo ? slotInfo.own_duration : null}
           />
         </section>
       </div>

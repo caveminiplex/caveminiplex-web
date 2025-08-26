@@ -72,21 +72,9 @@ const PriceSection = ({
                     </td>
                   </tr>
                 ))}
-                {
-                  ownDuration == "1h" && (
-                    <tr key={"own-duration"}>
-                      <td>Songs</td>
-                      <td className="text-center">{ownDuration}</td>
-                      <td className="text-center"></td>
-                      <td className="text-end">
-                        ₹ {OwnDurationPricing[ownDuration as keyof typeof OwnDurationPricing]}
-                      </td>
-                    </tr>
-                  )
-                }
                 
                 {
-                  ownDuration && ownDuration != "1h" && selectedMovies.map((movie) => (
+                 ownDuration && selectedMovies.map((movie) => (
                     <tr key={movie.id}>
                       <td>(CT) {movie.title}</td>
                       <td className="text-center">{movie.duration}</td>
@@ -101,8 +89,8 @@ const PriceSection = ({
                 {noOfPersons > 2 && (
                   <tr key={"per-person-cost"}>
                     <td>Additional Person Charge</td>
-                    <td></td>
-                    <td>₹ 100</td>
+                    <td className="text-center"></td>
+                    <td className="text-center">₹ 100</td>
                     <td className="text-end">₹ {(noOfPersons - 2) * 100}</td>
                   </tr>
                 )}

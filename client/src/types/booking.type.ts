@@ -18,3 +18,15 @@ export interface BookingWithMovies extends Booking {
   userName?: string;
   userEmail?: string;
 }
+
+
+export interface AvailableSlotType {
+    auditorium: number;
+    availableSlots: {
+        startTime: string;
+        endTime: string;
+    }[];
+    totalAvailableSlots: number;
+    existingBookings: string[];
+}
+

@@ -1,33 +1,37 @@
 import type { TimeType } from "../components/booking/PickingSection";
 
-export const getUpcoming10Days = () => {
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+
+export const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+export const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+
+export const getUpcomingDays = (count:number) => {  
 
   const today = new Date();
   const result = [];
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < count; i++) {
     const date = new Date();
     date.setDate(today.getDate() + i);
 
     result.push({
       date: date.getDate(),
-      day: days[date.getDay()],
-      month: months[date.getMonth()],
+      day: DAYS[date.getDay()],
+      month: MONTHS[date.getMonth()],
     });
   }
 
@@ -103,7 +107,6 @@ export const calculatePrice = (totalTime: string, noOfPersons: number) => {
       ? Number(price.toFixed(2))
       : Number(price.toFixed(2)) + (noOfPersons - 2) * 100;
 
-  console.log(returnValue);
 
   return returnValue;
 };

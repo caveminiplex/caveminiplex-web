@@ -4,7 +4,7 @@ import MovieCard from "../MovieCard";
 import { calculateTotalTime } from "../../util/time.util";
 import { useNavigate } from "react-router-dom";
 import { fetchMovies } from "../../pages/Home";
-import { IoIosMusicalNote } from "react-icons/io";
+import SongCard from "../SongCard";
 
 const MoviesListing = ({
   selectedMovies,
@@ -25,7 +25,12 @@ const MoviesListing = ({
     if (ownDuration === "1h") return;
 
     const data = await fetchMovies("NOW_SHOWING", ownDuration ?? "");
-    setCurrentMovies(data);
+
+    const addedBrowsedMovies = JSON.parse(
+      localStorage.getItem("browse-movies") || "[]"
+    );
+
+    setCurrentMovies([...addedBrowsedMovies, ...data]);
   };
 
   useEffect(() => {
@@ -78,51 +83,64 @@ const MoviesListing = ({
       ) : (
         <div className={` h-full grid grid-cols-2 gap-5 relative`}>
           {ownDuration === "1h" ? (
-            <div className="absolute flex flex-col space-y-5 items-center justify-center top-0 left-0 w-full h-full bg-black/60 backdrop-brightness-70 z-30 rounded-lg">
-              <IoIosMusicalNote className="text-white text-5xl" />
-
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <p className="text-white text-center text-xl">Only Songs</p>
-
-                <p className="text-neutral-200 text-center">
-                  Can't select movies in 1 hour duration
-                </p>
-              </div>
-            </div>
-          ) : null}
-
-          {currentMovies.map((movie) => (
             <div
               className={`w-fit h-fit relative`}
-              key={movie.id}
+              key={"songs"}
               onClick={() => {
-
-                if(ownDuration == "1h") return;
-
-                if(!ownDuration)
-                  selectMovie(movie);
-                else {
-                  setSelectedMovies([movie]);
-                }
+                if (ownDuration == "1h")
+                  selectMovie({
+                    id: -4,
+                    title: "Songs",
+                    duration: "1h",
+                    poster_url: "",
+                    state: "",
+                  });
               }}
             >
               <div className="absolute top-2 right-2 z-20">
                 <div
                   className={`w-[15px] h-[15px] rounded-full border border-neutral-800 ${
-                    selectedMovies.map((movie) => movie.id).includes(movie.id)
+                    selectedMovies.map((movie) => movie.id).includes(-4)
                       ? "bg-blue-600"
                       : "bg-white"
                   }`}
                 ></div>
               </div>
-              <MovieCard
-                width="150px"
-                height="200px"
-                titleSize="0.7rem"
-                movieInfo={movie}
-              />
+              <SongCard width="150px" height="200px" />
             </div>
-          ))}
+          ) : (
+            currentMovies.map((movie) => (
+              <div
+                className={`w-fit h-fit relative`}
+                key={movie.id}
+                onClick={() => {
+                  if (ownDuration == "1h") return;
+
+                  if (!ownDuration) selectMovie(movie);
+                  else {
+                    setSelectedMovies([movie]);
+                  }
+                }}
+              >
+                <div className="absolute top-2 right-2 z-20">
+                  <div
+                    className={`w-[15px] h-[15px] rounded-full border border-neutral-800 ${
+                      selectedMovies.map((movie) => movie.id).includes(movie.id)
+                        ? "bg-blue-600"
+                        : "bg-white"
+                    }`}
+                  ></div>
+                </div>
+                <MovieCard
+                  width="150px"
+                  height="200px"
+                  titleSize="0.7rem"
+                  movieInfo={movie}
+                  setCurrentMovies={setCurrentMovies}
+                />
+              </div>
+            ))
+          )}
         </div>
       )}
     </div>

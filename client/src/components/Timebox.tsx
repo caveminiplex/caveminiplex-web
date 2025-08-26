@@ -1,15 +1,18 @@
 import { useRef } from "react";
 import type { TimeType } from "./booking/PickingSection";
+import toast from "react-hot-toast";
 
 // const MINUTES = [0, 15, 30, 45];
 
 const Timebox = ({
   time,
   isSelected,
+  isAvailable,
   setTime,
 }: {
   time: TimeType;
   isSelected: boolean;
+  isAvailable: boolean;
   setTime: React.Dispatch<React.SetStateAction<TimeType | null>>;
 }) => {
 //   const [isHover, setIsHover] = useState<boolean>(false);
@@ -73,10 +76,22 @@ const Timebox = ({
 
       <div
         ref={divRef}
-        className={`text-[10px] px-3 py-2 rounded-sm  ${
-          isSelected ? "bg-blue-600 text-white " : "bg-green-300 text-black"
-        } cursor-pointer transition-all hover:scale-105`}
+        className={`text-[10px] px-3 py-2 rounded-sm ${
+          isSelected
+            ? "bg-blue-600 text-white"
+            : isAvailable
+            ? "bg-green-300 text-black"
+            : "bg-red-400 text-white"
+        } cursor-pointer transition-all hover:scale-105 flex-nowrap whitespace-nowrap`}
         onClick={() => {
+
+          if (!isAvailable) {
+            toast.error("Time is not available. Please select another time.", {
+              className:"text-center"
+            });
+            return;
+          };
+
           setTime((value) => {
             if (value?.hour == time.hour && value.type === time.type)
               return null;

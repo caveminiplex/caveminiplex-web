@@ -15,7 +15,7 @@ const Header = () => {
 
         <div>
           <select
-            name=""
+            name="locationFilter"
             className="px-2 text-neutral-600 cursor-pointer outline-none"
             onChange={(e) => setSelectedLocation(e.target.value)}
             value={selectedLocation}
