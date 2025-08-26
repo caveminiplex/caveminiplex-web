@@ -6,10 +6,11 @@ import { ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { User } from "../../db/types/user.type";
 import { Booking } from "../../db/types/booking.type";
 
-interface UserWithBookings extends User {
+type SafeUser = Omit<User, "password"> & { refreshToken?: never };
+type UserWithBookings = SafeUser & {
   bookings: number;
   totalPurchases: number;
-}
+};
 
 export const fetchUsers = asyncHandler(
   async (req: Request, res: Response) => {
@@ -51,8 +52,9 @@ export const fetchUsers = asyncHandler(
       // Combine user data with booking stats
       const usersWithBookings: UserWithBookings[] = users.map(user => {
         const stats = userBookingStats.get(user._id) || { bookings: 0, totalPurchases: 0 };
+        const { password, refreshToken, ...safe } = user as User & { refreshToken?: unknown };
         return {
-          ...user,
+          ...(safe as SafeUser),
           bookings: stats.bookings,
           totalPurchases: stats.totalPurchases,
         };
@@ -71,3 +73,4 @@ export const fetchUsers = asyncHandler(
     }
   }
 );
+

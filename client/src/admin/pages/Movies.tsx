@@ -6,6 +6,9 @@ import MovieCard from "../components/MovieCard";
 import AddMovieModal from "../components/Modals/AddMovieModal";
 import { toast } from "react-hot-toast";
 import { AxiosError } from "axios";
+import fuzzy from "fuzzy";
+
+let tempMovies: Movie[] = [];
 
 const Movies = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -13,6 +16,29 @@ const Movies = () => {
   const [durationFilter, setDurationFilter] = useState<string>("");
   const [isAddMovieModalOpen, setIsAddMovieModalOpen] =
     useState<boolean>(false);
+
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const searchMovies = async (searchQuery: string) => {
+    if (searchQuery.trim().length === 0) {
+      setMovies(tempMovies);
+      return;
+    }
+
+    const movieNames = movies.map((movie) => movie.title);
+
+    const results = fuzzy.filter(searchQuery, movieNames);
+
+    const searchedMovies: Movie[] = results.map((result) =>
+      movies.find((movie) => movie.title === result.string)
+    ) as Movie[];
+
+    setMovies(searchedMovies);
+  };
+
+  useEffect(() => {
+    searchMovies(searchQuery);
+  }, [searchQuery]);
 
   const fetchMovies = async (state?: string, duration?: string) => {
     const res = await adminApi.get(
@@ -25,7 +51,6 @@ const Movies = () => {
   };
 
   const addMovie = async (movieId: string, state: string) => {
-
     try {
       const res = await adminApi.post("/add/movie", {
         movieId: movieId,
@@ -38,29 +63,31 @@ const Movies = () => {
         setMovies((prev) => [data, ...prev]);
       }
     } catch (error) {
-      if(error instanceof AxiosError && error.response?.status === 409) {
+      if (error instanceof AxiosError && error.response?.status === 409) {
         toast.error("Movie already exists");
-      }else {
-        toast.error("Something went wrong")
+      } else {
+        toast.error("Something went wrong");
       }
-    }finally{
+    } finally {
       setIsAddMovieModalOpen(false);
     }
   };
 
-
   const removeMovie = async (movieId: number) => {
     const res = await adminApi.post("/remove/movie", {
-        movieId,
-    });   
+      movieId,
+    });
 
     if (res.status === 200) {
-        setMovies((prev) => prev.filter((movie) => movie.id !== movieId));
+      setMovies((prev) => prev.filter((movie) => movie.id !== movieId));
     }
-  }
+  };
 
   useEffect(() => {
-    fetchMovies(stateFilter, durationFilter).then((data) => setMovies(data));
+    fetchMovies(stateFilter, durationFilter).then((data) => {
+      setMovies(data);
+      tempMovies = data;
+    });
   }, [stateFilter, durationFilter]);
 
   return (
@@ -88,6 +115,8 @@ const Movies = () => {
             <input
               type="text"
               placeholder="Search movies..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-[400px] px-4 py-2 rounded-lg border-2 border-neutral-800 text-neutral-800 cursor-pointer outline-none"
             />
 
@@ -118,13 +147,13 @@ const Movies = () => {
         <div className="mt-10">
           {movies.length > 0 ? (
             <div className="w-full overflow-y-scroll custom-scrollbar">
-            <div className="flex items-center gap-5 flex-wrap custom-scrollbar h-[450px] pb-[500px]">
-              {movies.map((movie) => (
-                <div key={movie.id}>
-                  <MovieCard movieInfo={movie} actionFunc={removeMovie} />
-                </div>
-              ))}
-            </div>
+              <div className="flex items-center gap-5 flex-wrap custom-scrollbar h-[450px] pb-[500px]">
+                {movies.map((movie) => (
+                  <div key={movie.id}>
+                    <MovieCard movieInfo={movie} actionFunc={removeMovie} />
+                  </div>
+                ))}
+              </div>
             </div>
           ) : (
             <p>No movies found</p>
