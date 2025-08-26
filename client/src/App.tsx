@@ -16,13 +16,10 @@ import Snacks from "./admin/pages/Snacks";
 import TicketPage from "./pages/TicketPage";
 import { LocationProvider } from "./contexts/LocationContext";
 import About from "./pages/About";
-import { Analytics } from "@vercel/analytics/next";
 
 const App = () => {
   return (
     <LocationProvider>
-      <Analytics />
-
       <BrowserRouter>
         <Routes>
           {/* USER ROUTES */}
