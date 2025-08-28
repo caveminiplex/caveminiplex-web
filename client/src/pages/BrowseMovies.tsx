@@ -42,16 +42,16 @@ const BrowseMovies = () => {
   };
 
   return (
-    <div className="w-full min-h-screen px-7 py-12 bg-gradient-to-b from-indigo-50 to-blue-100">
-      <h1 className="text-center text-2xl mb-7">Browse Movies</h1>
+    <div className="w-full min-h-screen px-3 lg:px-7 py-12 bg-gradient-to-b from-indigo-50 to-blue-100">
+      <h1 className="text-center text-lg lg:text-2xl mb-7">Browse Movies</h1>
       {/* Search Bar */}
-      <div className="max-w-3xl mx-auto mb-8">
+      <div className="max-w-3xl mx-auto mb-5 md:mb-8">
         <input
           type="text"
           placeholder="Search for a movie..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full px-6 py-3 rounded-lg shadow-lg border border-gray-300 focus:outline-none text-lg"
+          className="w-full px-4 lg:px-6  py-2 lg:py-3 rounded-lg shadow-lg border border-gray-300 focus:outline-none text-sm lg:text-lg"
         />
       </div>
 
@@ -76,7 +76,7 @@ const BrowseMovies = () => {
       <div className="overflow-y-scroll h-[500px] pt-5 pb-40 custom-scrollbar-thin">
         <div className="flex justify-center gap-8 flex-wrap">
           {movies.map((movie) => (
-            <MovieCard key={movie.id} movieInfo={movie} type="browse" />
+            <MovieCard key={movie.id} movieInfo={movie} type="browse" width={innerWidth < 640 ? "140px" : "200px"} height={innerWidth < 640 ? "200px" : "280px"}/>
           ))}
         </div>
       </div>

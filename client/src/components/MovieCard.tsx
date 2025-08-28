@@ -71,7 +71,7 @@ const MovieCard = ({
     >
       {type == "browse" && (
         <div
-          className={`absolute top-2 right-2 flex items-center justify-center py-1 px-7 rounded-sm bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white font-semibold text-xs ${
+          className={`absolute top-2 right-2 flex items-center justify-center py-1 px-7 rounded-sm bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white font-semibold text-[8px] md:text-xs ${
             type == "browse" && "cursor-pointer"
           }`}
           onClick={() => {
