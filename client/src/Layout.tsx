@@ -10,11 +10,11 @@ const Layout = () => {
 
       <Toaster position="top-center" reverseOrder={false} />
       <div className="w-full h-screen flex flex-1 flex-col overflow-hidden relative">
-        <div className="flex-[0.08] md:flex-[0.09] w-full h-full">
+        <div className="flex-[0.06] md:flex-[0.09] w-full h-full">
           <Header />
         </div>
 
-        <div className="flex-[0.92] md:flex-[0.91] w-full h-full overflow-hidden">
+        <div className="flex-[0.94] md:flex-[0.91] w-full h-full overflow-hidden">
           <Outlet />
         </div>
       </div>
