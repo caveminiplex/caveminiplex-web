@@ -171,34 +171,34 @@ const PickingSection = ({
   }, [selectedDate, selectedLocation]);
 
   return (
-    <div className="w-full h-full pr-4 border-r border-neutral-300 relative">
+    <div className="w-full h-full lg:pr-4 lg:border-r lg:border-neutral-300 relative">
       {/* Dates */}
-      <div className="overflow-x-scroll custom-scrollbar-thin pb-2">
+      <div className="overflow-x-scroll custom-scrollbar-thin  pb-1 lg:pb-2">
         <div className="flex items-center space-x-4">
           {getUpcomingDays(10).map((upcoming, index) => (
             <div
               onClick={() => {
                 selectDate(upcoming);
               }}
-              className={`flex flex-col items-center justify-center px-5 py-3 rounded-lg  ${
+              className={`flex flex-col items-center justify-center px-3 lg:px-5 py-1 lg:py-3 rounded-sm lg:rounded-lg  ${
                 selectedDate?.date == upcoming.date
                   ? "bg-blue-600 text-white"
                   : "bg-fuchsia-100"
               } transition-all hover:scale-105 cursor-pointer`}
               key={index}
             >
-              <p className="text-[10px]">{upcoming.month}</p>
-              <p className="font-semibold">{upcoming.date}</p>
-              <p className="text-[10px]">{upcoming.day}</p>
+              <p className="text-[8px] lg:text-[10px]">{upcoming.month}</p>
+              <p className="font-semibold text-xs lg:text-base">{upcoming.date}</p>
+              <p className="text-[8px] lg:text-[10px]">{upcoming.day}</p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="my-4 flex items-center justify-center w-full">
+      <div className="my-2 lg:my-4 flex items-center justify-center w-full">
         <div className="flex items-center w-full">
           <div
-            className={`w-full text-sm py-2 text-center rounded-l-lg border border-gray-300 cursor-pointer ${
+            className={`w-full text-[10px] lg:text-sm py-1 lg:py-2 text-center rounded-l-sm lg:rounded-l-lg border border-gray-300 cursor-pointer ${
               selectedLocation === "Sadar Bazar, Agra"
                 ? "bg-gradient-to-b from-fuchsia-400 to-blue-500 text-white"
                 : "bg-transparent text-black"
@@ -208,7 +208,7 @@ const PickingSection = ({
             Sadar Bazar, Agra
           </div>
           <div
-            className={`w-full  text-sm text-center py-2 border-r border-t border-b border-gray-300 rounded-r-lg cursor-pointer ${
+            className={`w-full text-[10px] lg:text-sm text-center py-1 lg:py-2 border-r border-t border-b border-gray-300 rounded-r-sm lg:rounded-r-lg cursor-pointer ${
               selectedLocation === "Fatehbad Road, Agra"
                 ? "bg-gradient-to-b from-fuchsia-400 to-blue-500 text-white"
                 : "bg-transparent text-black"
@@ -221,7 +221,7 @@ const PickingSection = ({
       </div>
 
       {/* Rooms */}
-      <div className="flex items-center justify-center space-x-3 mt-7 flex-wrap">
+      <div className="flex items-center justify-center space-x-3 mt-4 lg:mt-7 flex-wrap">
         {[0, 1, 2, 3].map((audino) => (
           <div
             onClick={() => {
@@ -232,13 +232,13 @@ const PickingSection = ({
               }
               selectAudi(audino);
             }}
-            className={`px-8 py-3  ${
+            className={`px-4 lg:px-8 py-2 lg:py-3 text-[10px] lg:text-base  ${
               audino == selectedAudi
                 ? "bg-blue-600 text-white"
                 : isAudiAvailable(availableSlots, audino+1)
                 ? "bg-green-300"
                 : "bg-red-400"
-            } rounded-lg shadow-2xs transition-all hover:scale-105 cursor-pointer`}
+            } rounded-sm lg:rounded-lg shadow-2xs transition-all hover:scale-105 cursor-pointer`}
             key={audino}
           >
             Audi {audino + 1}
@@ -247,8 +247,8 @@ const PickingSection = ({
       </div>
 
       {/* No. of persons */}
-      <div className="flex items-center justify-center space-x-7 py-10">
-        <p className="whitespace-nowrap text-lg font-medium">No. of persons</p>
+      <div className="flex items-center justify-center space-x-7 py-6 lg:py-10">
+        <p className="whitespace-nowrap text-sm lg:text-lg font-medium">No. of persons</p>
         <input
           type="number"
           value={noOfPersons}
@@ -257,19 +257,19 @@ const PickingSection = ({
 
             if (value > 0 && value <= 5) setNoOfPerons(value);
           }}
-          className="text-center border-b border-neutral-600 outline-none w-[30%]"
+          className="text-center border-b border-neutral-600 outline-none w-[20%] lg:w-[30%] text-sm lg:text-base"
         />
       </div>
 
       {/* Choose duration */}
-      <div className="flex flex-col items-center justify-center py-4 px-5 space-y-6">
-        <h3 className="font-bold">Choose a duration</h3>
+      <div className="flex flex-col items-center justify-center py-2 lg:py-4 px-2 lg:px-5 space-y-3 lg:space-y-6">
+        <h3 className="text-sm lg:text-base font-bold">Choose a duration</h3>
 
-        <div className="flex items-center justify-center flex-wrap gap-7">
+        <div className="flex items-center justify-center flex-wrap gap-3 lg:gap-7">
           {DURATIONS.map((duration, index) => (
             <div
               key={index}
-              className={`text-[10px] px-3 py-2 rounded-sm  cursor-pointer transition-all hover:scale-105 ${
+              className={`text-[8px] lg:text-[10px] px-3 py-2 rounded-sm  cursor-pointer transition-all hover:scale-105 ${
                 selectedDuration === duration
                   ? "bg-blue-600 text-white "
                   : "bg-fuchsia-100"
@@ -286,11 +286,11 @@ const PickingSection = ({
       </div>
 
       {/* Available timings */}
-      <div className="flex flex-col items-center justify-center px-5 py-4 space-y-6">
-        <h3 className="font-bold">Choose a time</h3>
+      <div className="flex flex-col items-center justify-center py-2 lg:py-4 px-2 lg:px-5 space-y-3 lg:space-y-6">
+        <h3 className="text-sm lg:text-base font-bold">Choose a time</h3>
 
         <div className="overflow-x-scroll custom-scrollbar-thin pb-2 w-full">
-          <div className="flex items-center space-x-5">
+          <div className="flex items-center space-x-3 lg:space-x-5">
             {SLOTS.map((time, index) => (
               <Timebox
                 key={index}
@@ -309,12 +309,12 @@ const PickingSection = ({
           </div>
         </div>
 
-        <p className="text-[11px] text-neutral-400 text-center">
+        <p className="hidden lg:block text-[11px] text-neutral-400 text-center">
           * Please choose a start time based on the above availability *
         </p>
       </div>
 
-      {startTime && (
+      {(startTime && innerWidth >= 1024) && (
         <div className="w-full h-fit  absolute bottom-0 px-4  flex justify-center">
           <div className="bg-gradient-to-l from-blue-200 from-[50%] to-neutral-100 w-full h-full shadow-2xl rounded-lg flex flex-1  items-center justify-evenly px-6 py-4">
             <div className="flex-[0.2] flex flex-col items-start">

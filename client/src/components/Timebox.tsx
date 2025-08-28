@@ -76,7 +76,7 @@ const Timebox = ({
 
       <div
         ref={divRef}
-        className={`text-[10px] px-3 py-2 rounded-sm ${
+        className={`text-[8px] lg:text-[10px] px-3 py-2 rounded-sm ${
           isSelected
             ? "bg-blue-600 text-white"
             : isAvailable

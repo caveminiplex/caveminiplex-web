@@ -7,7 +7,7 @@ const Header = () => {
   const { selectedLocation, setSelectedLocation } = useLocation();
 
   return (
-    <header className="flex items-center justify-between px-7 py-3 md:py-5 bg-white">
+    <header className="flex items-center justify-between px-4 lg:px-7 py-3 md:py-5 bg-white">
       {/* Left portion */}
       <div className="md:flex-[0.2] flex items-center space-x-5">
         <Link to={"/"}>

@@ -114,7 +114,7 @@ const MovieCard = ({
           {movieInfo.title}
         </h2>
         {type === "normal" && (
-          <p className="text-[0.6rem] text-white">{movieInfo.duration}</p>
+          <p className="text-[0.4rem] md:text-[0.6rem] text-white">{movieInfo.duration}</p>
         )}
       </div>
     </div>

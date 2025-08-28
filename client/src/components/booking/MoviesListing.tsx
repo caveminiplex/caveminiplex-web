@@ -63,9 +63,9 @@ const MoviesListing = ({
     <div
       className={` h-full custom-scrollbar-thin relative ${
         ownDuration === "1h" ? "overflow-y-hidden" : "overflow-y-scroll"
-      }`}
+      } overflow-y-hidden lg:overflow-y-scroll`}
     >
-      <div className="w-full sticky top-0 flex items-center justify-center py-3 z-30">
+      <div className="hidden lg:flex w-full sticky top-0 items-center justify-center py-3 z-30">
         <button
           onClick={() => {
             navigate("/browse");
@@ -81,7 +81,7 @@ const MoviesListing = ({
           <p className="text-center text-neutral-600">No movies found</p>
         </div>
       ) : (
-        <div className={` h-full grid grid-cols-2 gap-5 relative`}>
+        <div className={` h-full flex items-center lg:grid lg:grid-cols-2 gap-5 relative`}>
           {ownDuration === "1h" ? (
             <div
               className={`w-fit h-fit relative`}
@@ -124,7 +124,7 @@ const MoviesListing = ({
               >
                 <div className="absolute top-2 right-2 z-20">
                   <div
-                    className={`w-[15px] h-[15px] rounded-full border border-neutral-800 ${
+                    className={`w-[10px] h-[10px] lg:w-[15px] lg:h-[15px] rounded-full border border-neutral-800 ${
                       selectedMovies.map((movie) => movie.id).includes(movie.id)
                         ? "bg-blue-600"
                         : "bg-white"
@@ -132,9 +132,9 @@ const MoviesListing = ({
                   ></div>
                 </div>
                 <MovieCard
-                  width="150px"
-                  height="200px"
-                  titleSize="0.7rem"
+                  width={innerWidth < 1024 ? "90px" : "150px"}
+                  height={innerWidth < 1024 ? "120px" : "200px"}
+                  titleSize={innerWidth < 1024 ? "0.4rem" : "0.7rem"}
                   movieInfo={movie}
                   setCurrentMovies={setCurrentMovies}
                 />
