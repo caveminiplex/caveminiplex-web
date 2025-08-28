@@ -71,14 +71,14 @@ const PaymentModal = ({
         }}
       >
         <div
-          className="flex flex-col items-center justify-center space-y-3 mt-4 bg-white w-[50%] py-12 px-6 rounded-lg"
+          className="flex flex-col items-center justify-center space-y-3 mt-4 bg-white lg:w-[50%] w-[90%] py-6 lg:py-12 px-6 rounded-lg"
           onClick={(e) => {
             e.stopPropagation();
           }}
         >
 
           <h1 className="font-bold">Pay ₹{amount}</h1>
-          <img src={qrCode} width={130} className="object-contain" />
+          <img src={qrCode} width={innerWidth < 1024 ? 80 : 130} className="object-contain" />
 
           <p className="text-[8px] text-neutral-400 text-center">
             * After paying the amount, fill the transaction ID and click on the
@@ -93,7 +93,7 @@ const PaymentModal = ({
             onChange={(e) => {
               setName(e.target.value);
             }}
-            className="w-full border-b border-neutral-400 text-sm pb-3 outline-none mt-4"
+            className="w-full border-b border-neutral-400 text-xs lg:text-sm pb-3 outline-none mt-4"
           />
 
           <input
@@ -104,7 +104,7 @@ const PaymentModal = ({
             onChange={(e) => {
               setPhoneNumber(e.target.value);
             }}
-            className="w-full border-b border-neutral-400 text-sm pb-3 outline-none mt-4"
+            className="w-full border-b border-neutral-400 text-xs lg:text-sm pb-3 outline-none mt-4"
           />
 
           <input
@@ -115,7 +115,7 @@ const PaymentModal = ({
             onChange={(e) => {
               setEmail(e.target.value);
             }}
-            className="w-full border-b border-neutral-400 text-sm pb-3 outline-none mt-4"
+            className="w-full border-b border-neutral-400 text-xs lg:text-sm pb-3 outline-none mt-4"
           />
 
           <input
@@ -126,11 +126,11 @@ const PaymentModal = ({
             onChange={(e) => {
               setTransactionId(e.target.value);
             }}
-            className="w-full border-b border-neutral-400 text-sm pb-3 outline-none mt-4"
+            className="w-full border-b border-neutral-400 text-xs lg:text-sm pb-3 outline-none mt-4"
           />
 
           <button
-            className={`w-fit px-10 py-2 text-sm mt-10 text-center rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200 ${
+            className={`w-fit px-10 py-2 text-xs lg:text-sm mt-10 text-center rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200 ${
               transactionId && name && email && phoneNumber
                 ? "brightness-100"
                 : "brightness-50"

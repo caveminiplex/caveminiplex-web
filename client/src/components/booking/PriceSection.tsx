@@ -260,7 +260,7 @@ export const PriceSectionMobile = ({
         </div>
       </div>
       <div className="w-full h-full flex flex-1 flex-col ">
-        <div className="flex items-center justify-between py-3 px-2 z-10 bg-white">
+        <div className="flex items-center justify-between py-3 px-4 z-10 bg-white">
           <h2 className="text-sm text-neutral-800 font-semibold shadow-2xl">
             Total time: {totalTime}
           </h2>
@@ -278,7 +278,7 @@ export const PriceSectionMobile = ({
           )}
         </div>
 
-        <div className="w-full h-fit flex items-center justify-between border-t border-t-neutral-300 px-3 py-2 z-10 bg-white">
+        <div className="w-full h-fit flex items-center justify-between border-t border-t-neutral-300 px-4 py-3 z-10 bg-white">
           <p className="text-[10px] font-medium">Start: 9 AM - End: 12 PM</p>
           <button
             className={`w-fit h-fit py-2 px-5 text-xs text-center rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200 cursor-pointer ${
