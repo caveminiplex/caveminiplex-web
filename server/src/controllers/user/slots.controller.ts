@@ -141,13 +141,23 @@ const getAvailableTimeSlots = (
 export const fetchAvailableSlots = asyncHandler(
   async (req: Request, res: Response) => {
     try {
-      const { date, location, auditorium, startTime, endTime } = req.query;
+      const { date: rawDate, location, auditorium, startTime, endTime } = req.query;
 
-      if (!date || !location) {
+      if (!rawDate) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          error: "Date and location are required",
+          error: "Date is required",
         });
       }
+
+      // Normalize date to YYYY-MM-DD format
+      const dateObj = new Date(rawDate as string);
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      const date = `${year}-${month}-${day}`;
+
+      // Define all possible locations
+      const ALL_LOCATIONS = ["Sadar Bazar, Agra", "Fatehbad Road, Agra"];
 
       // Normalize optional start/end times if provided (support 'h:mm AM/PM')
       let normStartTime: string | undefined;
@@ -165,22 +175,22 @@ export const fetchAvailableSlots = asyncHandler(
           .json({ error: e.message || "Invalid time format" });
       }
 
-      // Fetch all bookings for the specified date and location
-      const result = await dynamoDocClient.send(
-        new ScanCommand({
-          TableName: "bookings",
-          FilterExpression: "#date = :date AND #location = :location",
-          ExpressionAttributeNames: {
-            "#date": "date",
-            "#location": "location",
-          },
-          ExpressionAttributeValues: {
-            ":date": date,
-            ":location": location,
-          },
-        })
-      );
+      // Base scan parameters
+      const scanParams: any = {
+        TableName: "bookings",
+        FilterExpression: "#date = :date",
+        ExpressionAttributeNames: { "#date": "date" },
+        ExpressionAttributeValues: { ":date": date },
+      };
 
+      // If a specific location is provided, add it to the filter
+      if (location) {
+        scanParams.FilterExpression += " AND #location = :location";
+        scanParams.ExpressionAttributeNames["#location"] = "location";
+        scanParams.ExpressionAttributeValues[":location"] = location;
+      }
+
+      const result = await dynamoDocClient.send(new ScanCommand(scanParams));
       const existingBookings = (result.Items || []) as Booking[];
 
       // Normalize booking slot times to 24h for all calculations
@@ -192,7 +202,7 @@ export const fetchAvailableSlots = asyncHandler(
         },
       }));
 
-      // Filter out expired bookings (only matters when requesting today's date)
+      // Filter out expired bookings
       const today = new Date();
       const requestDate = new Date(String(date));
       const isFutureDate =
@@ -202,19 +212,40 @@ export const fetchAvailableSlots = asyncHandler(
         ? normalizedBookings
         : normalizedBookings.filter((booking) => isBookingActive(booking));
 
-      // If checking specific time slot availability
-      if (normStartTime && normEndTime && auditorium) {
+      // Helper function to get availability for a set of bookings
+      const getAuditoriumAvailability = (bookings: Booking[]) => {
+        const auditoriums = [1, 2, 3, 4];
+        return auditoriums.map((auditoriumNum) => {
+          const auditoriumBookings = bookings.filter(
+            (b) => b.auditorium === auditoriumNum
+          );
+          const availableSlots24 = getAvailableTimeSlots(auditoriumBookings);
+          return {
+            auditorium: auditoriumNum,
+            availableSlots: availableSlots24.map((s) => ({
+              startTime: to12h(s.startTime),
+              endTime: to12h(s.endTime),
+            })),
+            totalAvailableSlots: availableSlots24.length,
+            existingBookings: auditoriumBookings.map((b) => ({
+              startTime: to12h(b.slot.startTime),
+              endTime: to12h(b.slot.endTime),
+            })),
+          };
+        });
+      };
+
+      // Case 1: Specific slot check (requires location)
+      if (normStartTime && normEndTime && auditorium && location) {
         const auditoriumNum = parseInt(auditorium as string);
         const auditoriumBookings = activeBookings.filter(
-          (booking) => booking.auditorium === auditoriumNum
+          (b) => b.auditorium === auditoriumNum
         );
-
         const isAvailable = isTimeSlotAvailable(
           normStartTime,
           normEndTime,
           auditoriumBookings
         );
-
         return res.status(StatusCodes.OK).json({
           message: "Slot availability checked",
           data: {
@@ -230,35 +261,36 @@ export const fetchAvailableSlots = asyncHandler(
         });
       }
 
-      // Return all auditoriums with their available time slots
-      const auditoriums = [1, 2, 3, 4];
-      const auditoriumAvailability = auditoriums.map((auditoriumNum) => {
-        const auditoriumBookings = activeBookings.filter(
-          (booking) => booking.auditorium === auditoriumNum
-        );
-        const availableSlots24 = getAvailableTimeSlots(auditoriumBookings);
+      // Case 2: All slots for a specific location
+      if (location) {
+        const auditoriumAvailability = getAuditoriumAvailability(activeBookings);
+        return res.status(StatusCodes.OK).json({
+          message: "Available slots fetched successfully",
+          data: {
+            date,
+            location,
+            auditoriums: auditoriumAvailability,
+            totalAuditoriums: 4,
+          },
+        });
+      }
 
+      // Case 3: All slots for all locations
+      const availabilityByLocation = ALL_LOCATIONS.map((loc) => {
+        const locationBookings = activeBookings.filter((b) => b.location === loc);
+        const auditoriumAvailability = getAuditoriumAvailability(locationBookings);
         return {
-          auditorium: auditoriumNum,
-          availableSlots: availableSlots24.map((s) => ({
-            startTime: to12h(s.startTime),
-            endTime: to12h(s.endTime),
-          })),
-          totalAvailableSlots: availableSlots24.length,
-          existingBookings: auditoriumBookings.map((booking) => ({
-            startTime: to12h(booking.slot.startTime),
-            endTime: to12h(booking.slot.endTime),
-          })),
+          location: loc,
+          auditoriums: auditoriumAvailability,
+          totalAuditoriums: 4,
         };
       });
 
       res.status(StatusCodes.OK).json({
-        message: "Available slots fetched successfully",
+        message: "Available slots for all locations fetched successfully",
         data: {
           date,
-          location,
-          auditoriums: auditoriumAvailability,
-          totalAuditoriums: auditoriums.length,
+          locations: availabilityByLocation,
         },
       });
     } catch (err) {

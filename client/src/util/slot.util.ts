@@ -28,42 +28,79 @@ export const toLabel12h = (time: TimeType): string => {
   return `${hh}:${mm} ${ap}`;
 };
 
-export const isAudiAvailable = (
-  slot: AvailableSlotType[],
-  audiOneBased: number
-): boolean => {
-  const auditorium = slot.find((s) => s.auditorium === audiOneBased);
-  if (!auditorium) return false;
-  return auditorium.availableSlots.length > 0;
-};
 
-// Check if a specific time is available for an auditorium, using backend ranges
-export const isTimeAvailableForAudi = (
-  slots: AvailableSlotType[],
-  audiZeroBased: number,
+
+
+export const isTimeAvailable = (
+  slots: {
+    location: string;
+    auditoriums: AvailableSlotType[];
+  }[],
   time: TimeType
 ): boolean => {
-  const audi = slots.find((s) => s.auditorium === audiZeroBased + 1);
-  if (!audi || !audi.availableSlots?.length) return false;
+  const selectedTimeInMinutes = timeToMinutes(toLabel12h(time));
 
-  const candidate12 = toLabel12h(time); // e.g., "09:00 AM"
-  let cand24: string;
-  try {
-    cand24 = to24h(candidate12);
-  } catch {
+  // Check if the selected time is available in ANY auditorium at ANY location.
+  return slots.some((location) =>
+    location.auditoriums.some((auditorium) =>
+      auditorium.availableSlots.some((slot) => {
+        const slotStartTimeInMinutes = timeToMinutes(slot.startTime);
+        const slotEndTimeInMinutes = timeToMinutes(slot.endTime);
+        return (
+          selectedTimeInMinutes >= slotStartTimeInMinutes &&
+          selectedTimeInMinutes < slotEndTimeInMinutes
+        );
+      })
+    )
+  );
+};
+
+
+
+// Helper to convert time string (e.g., "09:00 AM") to minutes from midnight
+const timeToMinutes = (timeStr: string): number => {
+  const date = new Date(`1970-01-01T${to24h(timeStr)}`);
+  return date.getHours() * 60 + date.getMinutes();
+};
+
+
+
+
+
+
+/**
+ * Checks if an auditorium has any availability at or after a given time.
+ * @param slots - The list of available slots for the auditorium.
+ * @param audiOneBased - The auditorium number (1-based).
+ * @param time - The time from which to check for availability.
+ * @returns `true` if there is an available slot, `false` otherwise.
+ */
+export const isAudiAvailableFromTime = (
+  slots: AvailableSlotType[],
+  audiOneBased: number,
+  time: TimeType
+): boolean => {
+  // Find the specific auditorium from the list of all available slots.
+  const auditorium = slots.find((s) => s.auditorium === audiOneBased);
+
+  // If the auditorium isn't found or has no available slots, it's not available.
+  if (!auditorium || !auditorium.availableSlots.length) {
     return false;
   }
-  const candMin = toMinutes(cand24);
 
-  // Slot is available if it's within any available range [start, end)
-  return audi.availableSlots.some((range) => {
-    try {
-      const startMin = toMinutes(to24h(range.startTime));
-      const endMin = toMinutes(to24h(range.endTime));
+  // Convert the selected time to minutes from midnight for easy comparison.
+  const selectedTimeInMinutes = timeToMinutes(toLabel12h(time));
 
-      return candMin >= startMin && candMin < endMin;
-    } catch {
-      return false;
-    }
+  // Check if the selected time falls within any of the available time ranges.
+  return auditorium.availableSlots.some((slot) => {
+    const slotStartTimeInMinutes = timeToMinutes(slot.startTime);
+    const slotEndTimeInMinutes = timeToMinutes(slot.endTime);
+
+    // The auditorium is available if the selected time is at or after the start
+    // of an available slot and before the end of that same slot.
+    return (
+      selectedTimeInMinutes >= slotStartTimeInMinutes &&
+      selectedTimeInMinutes < slotEndTimeInMinutes
+    );
   });
 };

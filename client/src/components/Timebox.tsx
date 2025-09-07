@@ -13,7 +13,7 @@ const Timebox = ({
   time: TimeType;
   isSelected: boolean;
   isAvailable: boolean;
-  setTime: React.Dispatch<React.SetStateAction<TimeType | null>>;
+  setTime: React.Dispatch<React.SetStateAction<TimeType>>;
 }) => {
 //   const [isHover, setIsHover] = useState<boolean>(false);
 //   const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -92,11 +92,7 @@ const Timebox = ({
             return;
           };
 
-          setTime((value) => {
-            if (value?.hour == time.hour && value.type === time.type)
-              return null;
-            return time;
-          });
+          setTime(time);
         }}
       >
         {time.hour} {time.type}

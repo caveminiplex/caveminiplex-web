@@ -4,13 +4,13 @@ import {
   DAYS,
   getUpcomingDays,
   MONTHS,
+  timeObjToStr,
 } from "../../util/time.util";
 import Timebox from "../Timebox";
-import { useLocation } from "../../contexts/LocationContext";
 import userApi from "../../apis/userApi";
 import { formatDate } from "../../util/date.util";
 import type { AvailableSlotType } from "../../types/booking.type";
-import { isAudiAvailable, isTimeAvailableForAudi } from "../../util/slot.util";
+import { isTimeAvailable, isAudiAvailableFromTime } from "../../util/slot.util";
 import { toast } from "react-hot-toast";
 
 export type DateType = {
@@ -115,24 +115,30 @@ const PickingSection = ({
     day: DAYS[new Date().getDay()],
   });
 
-  const [selectedAudi, setSelectedAudi] = useState<number>(0);
+  const [selectedAudi, setSelectedAudi] = useState<number | null>(null);
 
   const [noOfPersons, setNoOfPerons] = useState<number>(2);
   const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
-  const [startTime, setStartTime] = useState<TimeType | null>(null);
-  const { selectedLocation, setSelectedLocation } = useLocation();
-  const [availableSlots, setAvailableSlots] = useState<AvailableSlotType[]>([]);
+  const [startTime, setStartTime] = useState<TimeType>({
+    hour: 9,
+    min: 0,
+    type: "AM",
+  });
+  const [availableSlots, setAvailableSlots] = useState<{
+    location:string,
+    auditoriums:AvailableSlotType[]
+  }[]>([]);
 
   const fetchAvailableSlots = async () => {
     const formattedDate = formatDate(selectedDate);
 
     const res = await userApi.get(
-      `/slots?date=${formattedDate}&location=${selectedLocation}`
+      `/slots?date=${formattedDate}&startTime=${timeObjToStr(startTime)}`
     );
 
     const data = res.data.data;
 
-    setAvailableSlots(data.auditoriums);
+    setAvailableSlots(data.locations);
   };
 
   const selectDate = (date: DateType) => {
@@ -159,15 +165,14 @@ const PickingSection = ({
   }, [selectedDate, selectedAudi, startTime, noOfPersons, selectedDuration]);
 
   useEffect(() => {
-    setSelectedAudi(0);
-    setStartTime(null);
+    setSelectedAudi(null);
     setSelectedDuration(null);
     setNoOfPerons(2);
-  }, [selectedLocation]);
+  }, [startTime]);
 
   useEffect(() => {
     fetchAvailableSlots();
-  }, [selectedDate, selectedLocation]);
+  }, [selectedDate, startTime]);
 
   return (
     <div className="w-full h-full lg:pr-4 lg:border-r lg:border-neutral-300 relative">
@@ -210,11 +215,7 @@ const PickingSection = ({
                 isSelected={
                   time.hour == startTime?.hour && time.type === startTime.type
                 }
-                isAvailable={isTimeAvailableForAudi(
-                  availableSlots,
-                  selectedAudi,
-                  time
-                )}
+                isAvailable={isTimeAvailable(availableSlots, time)}
               />
             ))}
           </div>
@@ -293,34 +294,34 @@ const PickingSection = ({
         <h3 className="text-sm lg:text-base font-bold">Choose an auditorium</h3>
 
         <div className="flex flex-col items-center justify-center space-y-3 lg:space-y-5">
-          {["Sadar Bazar, Agra", "Fatehbad Road, Agra"].map(
-            (location, index) => (
+          {availableSlots.map(
+            (slot, index) => (
               <div key={index} className="flex flex-col items-center justify-center space-y-4">
-                <p className="text-sm text-gray-500">{location}</p>
+                <p className="text-sm text-gray-500">{slot.location}</p>
 
                 <div className="flex items-center justify-center space-x-3 flex-wrap">
-                  {[0, 1, 2, 3].map((audino) => (
+                  {slot.auditoriums.map((audi) => (
                     <div
                       onClick={() => {
-                        if (!isAudiAvailable(availableSlots, audino + 1)) {
+                        if (!isAudiAvailableFromTime(slot.auditoriums, audi.auditorium, startTime)) {
                           console.log("not available");
                           toast.error(
-                            `No Slots Available in Audi ${audino + 1}`
+                            `No Slots Available in Audi ${audi.auditorium}`
                           );
                           return;
                         }
-                        selectAudi(audino);
+                        selectAudi(audi.auditorium);
                       }}
                       className={`px-4 lg:px-5 py-2 lg:py-2 text-[10px] lg:text-sm  ${
-                        audino == selectedAudi
+                        audi.auditorium == selectedAudi
                           ? "bg-blue-600 text-white"
-                          : isAudiAvailable(availableSlots, audino + 1)
+                          : isAudiAvailableFromTime(slot.auditoriums, audi.auditorium, startTime)
                           ? "bg-green-300"
                           : "bg-red-400"
                       } rounded-sm lg:rounded-lg shadow-2xs transition-all hover:scale-105 cursor-pointer`}
-                      key={audino}
+                      key={audi.auditorium}
                     >
-                      Audi {audino + 1}
+                      Audi {audi.auditorium}
                     </div>
                   ))}
                 </div>
