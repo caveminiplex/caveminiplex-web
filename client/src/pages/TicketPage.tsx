@@ -177,7 +177,7 @@ const TicketPage = () => {
                 </button>
               </div>
 
-              <div className="space-y-6 overflow-y-scroll h-[400px] custom-scrollbar-thin">
+              <div className="space-y-6 overflow-y-scroll h-[400px] custom-scrollbar-thin px-2">
                 {/* Movie Names */}
                 <div>
                   <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-2">
@@ -215,6 +215,12 @@ const TicketPage = () => {
                     </p>
                   </div>
                 </div>
+                    {/* Note Section */}
+                    <div className="w-full rounded-lg border border-neutral-200 p-2">
+                        <p className="text-xs text-neutral-500">
+                            Note: Please come before 15 minutes of the showtime. And if you are late, or show time is over, then it is not our responsibility and the ticket will not be refunded.
+                        </p>
+                    </div>
 
                 {/* Date & Time */}
                 <div>

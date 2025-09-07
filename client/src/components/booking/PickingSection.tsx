@@ -4,7 +4,6 @@ import {
   DAYS,
   getUpcomingDays,
   MONTHS,
-  timeObjToStr,
 } from "../../util/time.util";
 import Timebox from "../Timebox";
 import { useLocation } from "../../contexts/LocationContext";
@@ -188,14 +187,41 @@ const PickingSection = ({
               key={index}
             >
               <p className="text-[8px] lg:text-[10px]">{upcoming.month}</p>
-              <p className="font-semibold text-xs lg:text-base">{upcoming.date}</p>
+              <p className="font-semibold text-xs lg:text-base">
+                {upcoming.date}
+              </p>
               <p className="text-[8px] lg:text-[10px]">{upcoming.day}</p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="my-2 lg:my-4 flex items-center justify-center w-full">
+      {/* Available timings */}
+      <div className="flex flex-col items-center justify-center py-2 lg:py-4 px-2 lg:px-5 space-y-3 lg:space-y-6">
+        <h3 className="text-sm lg:text-base font-bold">Choose a time</h3>
+
+        <div className="overflow-x-scroll custom-scrollbar-thin pb-2 w-full">
+          <div className="flex items-center space-x-3 lg:space-x-5">
+            {SLOTS.map((time, index) => (
+              <Timebox
+                key={index}
+                time={time}
+                setTime={setStartTime}
+                isSelected={
+                  time.hour == startTime?.hour && time.type === startTime.type
+                }
+                isAvailable={isTimeAvailableForAudi(
+                  availableSlots,
+                  selectedAudi,
+                  time
+                )}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* <div className="my-2 lg:my-4 flex items-center justify-center w-full">
         <div className="flex items-center w-full">
           <div
             className={`w-full text-[10px] lg:text-sm py-1 lg:py-2 text-center rounded-l-sm lg:rounded-l-lg border border-gray-300 cursor-pointer ${
@@ -218,37 +244,13 @@ const PickingSection = ({
             Fatehbad Road, Agra
           </div>
         </div>
-      </div>
-
-      {/* Rooms */}
-      <div className="flex items-center justify-center space-x-3 mt-4 lg:mt-7 flex-wrap">
-        {[0, 1, 2, 3].map((audino) => (
-          <div
-            onClick={() => {
-              if (!isAudiAvailable(availableSlots, audino + 1)) {
-                console.log("not available")
-                toast.error(`No Slots Available in Audi ${audino + 1}`)
-                return;
-              }
-              selectAudi(audino);
-            }}
-            className={`px-4 lg:px-8 py-2 lg:py-3 text-[10px] lg:text-base  ${
-              audino == selectedAudi
-                ? "bg-blue-600 text-white"
-                : isAudiAvailable(availableSlots, audino+1)
-                ? "bg-green-300"
-                : "bg-red-400"
-            } rounded-sm lg:rounded-lg shadow-2xs transition-all hover:scale-105 cursor-pointer`}
-            key={audino}
-          >
-            Audi {audino + 1}
-          </div>
-        ))}
-      </div>
+      </div> */}
 
       {/* No. of persons */}
-      <div className="flex items-center justify-center space-x-7 py-6 lg:py-10">
-        <p className="whitespace-nowrap text-sm lg:text-lg font-medium">No. of persons</p>
+      <div className="flex items-center justify-center space-x-7 py-6">
+        <p className="whitespace-nowrap text-sm lg:text-lg font-medium">
+          No. of persons
+        </p>
         <input
           type="number"
           value={noOfPersons}
@@ -285,36 +287,50 @@ const PickingSection = ({
         </div>
       </div>
 
-      {/* Available timings */}
-      <div className="flex flex-col items-center justify-center py-2 lg:py-4 px-2 lg:px-5 space-y-3 lg:space-y-6">
-        <h3 className="text-sm lg:text-base font-bold">Choose a time</h3>
+      {/* Auditoriums */}
 
-        <div className="overflow-x-scroll custom-scrollbar-thin pb-2 w-full">
-          <div className="flex items-center space-x-3 lg:space-x-5">
-            {SLOTS.map((time, index) => (
-              <Timebox
-                key={index}
-                time={time}
-                setTime={setStartTime}
-                isSelected={
-                  time.hour == startTime?.hour && time.type === startTime.type
-                }
-                isAvailable={isTimeAvailableForAudi(
-                  availableSlots,
-                  selectedAudi,
-                  time
-                )}
-              />
-            ))}
-          </div>
+      <div className="flex flex-col items-center justify-center py-2 lg:py-4 px-2 lg:px-5 space-y-3 lg:space-y-5">
+        <h3 className="text-sm lg:text-base font-bold">Choose an auditorium</h3>
+
+        <div className="flex flex-col items-center justify-center space-y-3 lg:space-y-5">
+          {["Sadar Bazar, Agra", "Fatehbad Road, Agra"].map(
+            (location, index) => (
+              <div key={index} className="flex flex-col items-center justify-center space-y-4">
+                <p className="text-sm text-gray-500">{location}</p>
+
+                <div className="flex items-center justify-center space-x-3 flex-wrap">
+                  {[0, 1, 2, 3].map((audino) => (
+                    <div
+                      onClick={() => {
+                        if (!isAudiAvailable(availableSlots, audino + 1)) {
+                          console.log("not available");
+                          toast.error(
+                            `No Slots Available in Audi ${audino + 1}`
+                          );
+                          return;
+                        }
+                        selectAudi(audino);
+                      }}
+                      className={`px-4 lg:px-5 py-2 lg:py-2 text-[10px] lg:text-sm  ${
+                        audino == selectedAudi
+                          ? "bg-blue-600 text-white"
+                          : isAudiAvailable(availableSlots, audino + 1)
+                          ? "bg-green-300"
+                          : "bg-red-400"
+                      } rounded-sm lg:rounded-lg shadow-2xs transition-all hover:scale-105 cursor-pointer`}
+                      key={audino}
+                    >
+                      Audi {audino + 1}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          )}
         </div>
-
-        <p className="hidden lg:block text-[11px] text-neutral-400 text-center">
-          * Please choose a start time based on the above availability *
-        </p>
       </div>
 
-      {(startTime && innerWidth >= 1024) && (
+      {/* {startTime && innerWidth >= 1024 && (
         <div className="w-full h-fit  absolute bottom-0 px-4  flex justify-center">
           <div className="bg-gradient-to-l from-blue-200 from-[50%] to-neutral-100 w-full h-full shadow-2xl rounded-lg flex flex-1  items-center justify-evenly px-6 py-4">
             <div className="flex-[0.2] flex flex-col items-start">
@@ -338,7 +354,7 @@ const PickingSection = ({
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

@@ -9,6 +9,7 @@ import PriceSection, {
 } from "../components/booking/PriceSection";
 import PaymentModal from "../components/Modals/PaymentModal";
 import { calculatePrice, roundOffCost } from "../util/time.util";
+import ImportantNoteModal from "../components/Modals/ImportantNoteModal";
 
 const BookingPage = () => {
   const [selectedMovies, setSelectedMovies] = useState<Movie[]>([]);
@@ -18,6 +19,8 @@ const BookingPage = () => {
   const [totalTime, setTotalTime] = useState<string>("");
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
+
+  const [isImportantNoteModalOpen, setIsImportantNoteModalOpen] = useState<boolean>(false);
 
   return (
     <>
@@ -30,6 +33,10 @@ const BookingPage = () => {
         slotInfo={slotInfo}
         movieIds={selectedMovies.map((movie) => movie.id)}
       />
+
+      <ImportantNoteModal isOpen={isImportantNoteModalOpen} setIsOpen={setIsImportantNoteModalOpen} setIsPaymentModalOpen={setIsPaymentModalOpen}/>
+
+      
       {/* <AddOnModal isOpen={isAddOnModalOpen} setIsOpen={setAddOnModalOpen}/> */}
 
       <div className="w-full h-full flex flex-1 flex-col lg:flex-row">
@@ -67,20 +74,21 @@ const BookingPage = () => {
               }
               totalTime={totalTime}
               selectedMovies={selectedMovies}
-              setIsPaymentModalOpen={setIsPaymentModalOpen}
+              setIsImportantNoteModalOpen={setIsImportantNoteModalOpen}
               noOfPersons={slotInfo ? slotInfo.noOfPerons : 2}
               ownDuration={slotInfo ? slotInfo.own_duration : null}
             />
           ) : (
             <PriceSection
-              isMovieSlotSelected={
+              isMovieSlotSelected={ 
                 selectedMovies.length != 0 &&
                 slotInfo?.date != null &&
                 slotInfo.audi != null
               }
+              startTime={slotInfo?.startTime!}
               totalTime={totalTime}
               selectedMovies={selectedMovies}
-              setIsPaymentModalOpen={setIsPaymentModalOpen}
+              setIsImportantNoteModalOpen={setIsImportantNoteModalOpen}
               noOfPersons={slotInfo ? slotInfo.noOfPerons : 2}
               ownDuration={slotInfo ? slotInfo.own_duration : null}
             />

@@ -1,9 +1,15 @@
 import type { Movie } from "../../types/movie.type";
-import { calculatePrice, roundOffCost } from "../../util/time.util";
+import {
+  addTimes,
+  calculatePrice,
+  roundOffCost,
+  timeObjToStr,
+} from "../../util/time.util";
 import { useLocation } from "../../contexts/LocationContext";
 import toast from "react-hot-toast";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
 import { useState } from "react";
+import type { TimeType } from "./PickingSection";
 
 export const OwnDurationPricing = {
   "1h": 500,
@@ -19,30 +25,60 @@ const PriceSection = ({
   isMovieSlotSelected,
   totalTime,
   selectedMovies,
-  setIsPaymentModalOpen,
+  setIsImportantNoteModalOpen,
   noOfPersons,
   ownDuration,
+  startTime,
 }: {
   isMovieSlotSelected: boolean;
   totalTime: string;
   selectedMovies: Movie[];
-  setIsPaymentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsImportantNoteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   noOfPersons: number;
   ownDuration: string | null;
+  startTime: TimeType | null;
 }) => {
   const { selectedLocation } = useLocation();
 
   return (
     <div className="w-full h-full flex flex-1 flex-col justify-between">
       <div className="flex-[0.95] w-full h-full">
-        <div className=" w-full bg-gradient-to-r from-blue-100 from-[20%] to-transparent px-7 py-4 rounded-lg space-y-2">
-          <h2 className="text-xl text-neutral-800 font-semibold">
-            Total time: {totalTime}
-          </h2>
+        <div className="bg-gradient-to-r from-blue-100 from-[20%] to-transparent px-7 py-4 rounded-lg space-y-4">
+          {startTime && innerWidth >= 1024 && (
+            <div className=" w-full rounded-lg flex flex-1  items-center justify-evenly">
+              <div className="flex-[0.2] flex flex-col items-start">
+                <p className="text-sm text-neutral-800">Start Time</p>
+                <p className="text-xs text-neutral-500">
+                  {startTime ? timeObjToStr(startTime) : ""}
+                </p>
+              </div>
 
-          <p className="text-xs text-neutral-600">
-            Location: {selectedLocation}
-          </p>
+              <div className="flex-[0.6] w-full h-[1px] border border-neutral-500 border-dashed"></div>
+
+              <div className="flex-[0.2] flex flex-col items-end">
+                {totalTime !== "0h 0m" && (
+                  <>
+                    <p className="text-sm text-neutral-800">End Time</p>
+                    <p className="text-xs text-neutral-500">
+                      {startTime
+                        ? timeObjToStr(addTimes(startTime, totalTime))
+                        : ""}
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs text-neutral-800 font-semibold">
+              Total time: {totalTime}
+            </h2>
+
+            <p className="text-xs text-neutral-600">
+              Location: {selectedLocation}
+            </p>
+          </div>
         </div>
 
         <div className="mt-6 w-full">
@@ -152,7 +188,7 @@ const PriceSection = ({
             isMovieSlotSelected ? "brightness-100" : "brightness-50"
           }`}
           onClick={() => {
-            if (isMovieSlotSelected) setIsPaymentModalOpen(true);
+            if (isMovieSlotSelected) setIsImportantNoteModalOpen(true);
             else
               toast("Please select a movie slot", {
                 icon: "🎟️",
@@ -170,14 +206,14 @@ export const PriceSectionMobile = ({
   isMovieSlotSelected,
   totalTime,
   selectedMovies,
-  setIsPaymentModalOpen,
+  setIsImportantNoteModalOpen,
   noOfPersons,
   ownDuration,
 }: {
   isMovieSlotSelected: boolean;
   totalTime: string;
   selectedMovies: Movie[];
-  setIsPaymentModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsImportantNoteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   noOfPersons: number;
   ownDuration: string | null;
 }) => {
@@ -285,7 +321,7 @@ export const PriceSectionMobile = ({
               isMovieSlotSelected ? "brightness-100" : "brightness-50"
             }`}
             onClick={() => {
-              if (isMovieSlotSelected) setIsPaymentModalOpen(true);
+              if (isMovieSlotSelected) setIsImportantNoteModalOpen(true);
               else
                 toast("Please select a movie slot", {
                   icon: "🎟️",
