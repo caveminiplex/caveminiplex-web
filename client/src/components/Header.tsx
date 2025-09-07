@@ -43,8 +43,8 @@ const Header = () => {
             <p>About</p>
           </Link>
 
-          <Link to={"/movies"}>
-            <p>All Movies</p>
+          <Link to={"/contact"}>
+            <p>Contact</p>
           </Link>
         </div>
 

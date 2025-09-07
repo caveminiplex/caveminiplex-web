@@ -42,13 +42,13 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center mt-6 text-sm text-gray-500">
           <p>© {new Date().getFullYear()} CaveMiniplex. All rights reserved.</p>
           <div className="flex space-x-4 mt-2 md:mt-0">
-            <a href="#" className="hover:text-neutral-400">
+            <a href="/privacy-policy" className="hover:text-neutral-400">
               Privacy Policy
             </a>
-            <a href="#" className="hover:text-neutral-400">
+            <a href="/terms-of-service" className="hover:text-neutral-400">
               Terms of Service
             </a>
-            <a href="#" className="hover:text-neutral-400">
+            <a href="/contact" className="hover:text-neutral-400">
               Contact
             </a>
           </div>

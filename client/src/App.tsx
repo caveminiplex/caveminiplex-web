@@ -8,7 +8,6 @@ import BrowseMovies from "./pages/BrowseMovies";
 import AllMovies from "./pages/AllMovies";
 import AdminLayout from "./admin/AdminLayout";
 import AdminLogin from "./admin/pages/AdminLogin";
-import Loading from "./Loading";
 import Bookings from "./admin/pages/Bookings";
 import Movies from "./admin/pages/Movies";
 import Users from "./admin/pages/Users";
@@ -16,6 +15,9 @@ import Snacks from "./admin/pages/Snacks";
 import TicketPage from "./pages/TicketPage";
 import { LocationProvider } from "./contexts/LocationContext";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 
 const App = () => {
   return (
@@ -26,7 +28,6 @@ const App = () => {
 
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/test" element={<Loading />} />
 
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
@@ -35,6 +36,9 @@ const App = () => {
             <Route path="/movies" element={<AllMovies />} />
             <Route path="/ticket/:id" element={<TicketPage />} />
             <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
           </Route>
 
           {/* ADMIN ROUTES */}

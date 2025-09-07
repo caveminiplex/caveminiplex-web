@@ -108,7 +108,7 @@ const Home = () => {
               Watch movies of your choice with the close one's 🍿🎬
             </p>
 
-            <div className="flex space-y-4 md:space-x-4 md:flex-row md:w-fit w-full  flex-col">
+            <div className="flex space-y-4 md:space-y-0 md:space-x-4 md:flex-row md:w-fit w-full  flex-col">
               <button
                 onClick={() => {
                   navigate("/book");
