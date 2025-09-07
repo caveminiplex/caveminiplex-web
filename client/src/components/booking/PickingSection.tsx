@@ -117,7 +117,7 @@ const PickingSection = ({
 
   const [selectedAudi, setSelectedAudi] = useState<number | null>(null);
 
-  const [noOfPersons, setNoOfPerons] = useState<number>(2);
+  const [noOfPersons, setNoOfPerons] = useState<string>("2");
   const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
   const [startTime, setStartTime] = useState<TimeType>({
     hour: 9,
@@ -157,7 +157,7 @@ const PickingSection = ({
     setSlotInfo({
       date: selectedDate,
       audi: selectedAudi,
-      noOfPerons: noOfPersons,
+      noOfPerons: parseInt(noOfPersons),
       startTime: startTime,
       endTime: startTime ? addTimes(startTime, totalTime) : null,
       own_duration: selectedDuration,
@@ -167,7 +167,7 @@ const PickingSection = ({
   useEffect(() => {
     setSelectedAudi(null);
     setSelectedDuration(null);
-    setNoOfPerons(2);
+    setNoOfPerons("2");
   }, [startTime]);
 
   useEffect(() => {
@@ -253,12 +253,17 @@ const PickingSection = ({
           No. of persons
         </p>
         <input
-          type="number"
+          type="text"
           value={noOfPersons}
           onChange={(e) => {
+            if(e.target.value == ""){
+              setNoOfPerons("");
+              return;
+            }
+
             const value = parseInt(e.target.value);
 
-            if (value > 0 && value <= 5) setNoOfPerons(value);
+            if (value > 0 && value <= 5 ) setNoOfPerons(e.target.value);
           }}
           className="text-center border-b border-neutral-600 outline-none w-[20%] lg:w-[30%] text-sm lg:text-base"
         />
