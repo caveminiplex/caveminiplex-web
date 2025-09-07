@@ -13,11 +13,11 @@ const to24h = (t: string): string => {
   return `${h.toString().padStart(2, "0")}:${min}`;
 };
 
-// Convert HH:MM to minutes since midnight
-const toMinutes = (hhmm: string): number => {
-  const [h, m] = hhmm.split(":").map(Number);
-  return h * 60 + m;
-};
+// // Convert HH:MM to minutes since midnight
+// const toMinutes = (hhmm: string): number => {
+//   const [h, m] = hhmm.split(":").map(Number);
+//   return h * 60 + m;
+// };
 
 // Format TimeType to strict label like "HH:MM AM/PM" (e.g., 09:00 AM)
 export const toLabel12h = (time: TimeType): string => {

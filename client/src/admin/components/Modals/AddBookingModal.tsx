@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DAYS, getUpcomingDays, MONTHS } from "../../../util/time.util";
 import type { DateType } from "../../../components/booking/PickingSection";
-import { isAudiAvailable } from "../../../util/slot.util";
-import toast from "react-hot-toast";
-import type { AvailableSlotType } from "../../../types/booking.type";
 
 const AddBookingModal = ({
   isOpen,
@@ -23,18 +20,8 @@ const AddBookingModal = ({
   const [selectedLocation, setSelectedLocation] =
     useState<string>("Sadar Bazar, Agra");
 
-  const [availableSlots, setAvailableSlots] = useState<AvailableSlotType[]>([]);
 
   const [selectedAudi, setSelectedAudi] = useState<number>(0);
-
-
-  const fetchAvailableSlots = async () => {
-    setAvailableSlots([])
-  }
-
-  useEffect(() => {
-    fetchAvailableSlots()
-  },[])
 
   if (!isOpen) return null;
 
@@ -99,19 +86,19 @@ const AddBookingModal = ({
                   {[0, 1, 2, 3].map((audino) => (
                     <div
                       onClick={() => {
-                        if (!isAudiAvailable(availableSlots, audino + 1)) {
-                          console.log("not available");
-                          toast.error(
-                            `No Slots Available in Audi ${audino + 1}`
-                          );
-                          return;
-                        }
+                        // if (!isAudiAvailable(availableSlots, audino + 1)) {
+                        //   console.log("not available");
+                        //   toast.error(
+                        //     `No Slots Available in Audi ${audino + 1}`
+                        //   );
+                        //   return;
+                        // }
                         setSelectedAudi(audino);
                       }}
                       className={`px-6 py-3 text-xs  ${
                         audino == selectedAudi
                           ? "bg-blue-600 text-white"
-                          : isAudiAvailable(availableSlots, audino + 1)
+                          : true
                           ? "bg-green-300"
                           : "bg-red-400"
                       } rounded-lg shadow-2xs transition-all hover:scale-105 cursor-pointer`}
