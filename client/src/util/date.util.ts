@@ -6,5 +6,6 @@ const MONTHS: Record<string, string> = {
 };
 
 export const formatDate = (date: DateType) => {
-  return `${new Date().getFullYear()}-${MONTHS[date.month]}-${date.date}`;
+  const day = String(date.date).padStart(2, '0');
+  return `${new Date().getFullYear()}-${MONTHS[date.month]}-${day}`;
 };

@@ -4,8 +4,11 @@ import userApi from "../../apis/userApi";
 import type { SlotType } from "../booking/PickingSection";
 import { formatDate } from "../../util/date.util";
 import toast from "react-hot-toast";
-import Loading from "../../Loading";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "../../contexts/LocationContext";
+import Lottie from "lottie-react";
+import paymentSuccessfullAnim from "../../assets/lottie/paymentSuccessfull.json";
+import { timeObjToStr } from "../../util/time.util";
 
 const PaymentModal = ({
   isOpen,
@@ -26,7 +29,13 @@ const PaymentModal = ({
   const [phoneNumber, setPhoneNumber] = useState<string>("");
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [isBookingSuccessfull, setIsBookingSuccessfull] =
+    useState<boolean>(false);
   const navigate = useNavigate();
+
+  const { selectedLocation } = useLocation();
+
+  const [bookingId, setBookingId] = useState<string>("");
 
   const handleBooking = async () => {
     if (!transactionId || !name || !email || !phoneNumber) {
@@ -42,20 +51,20 @@ const PaymentModal = ({
       auditorium: slotInfo?.audi,
       date: slotInfo?.date ? formatDate(slotInfo.date) : "",
       noOfPersons: slotInfo?.noOfPerons,
-      location: "Sadar Bazar, Agra",
+      location: selectedLocation,
       amountPaid: amount,
       slot: {
-        startTime: slotInfo?.startTime,
-        endTime: slotInfo?.endTime,
+        startTime: slotInfo?.startTime && timeObjToStr(slotInfo.startTime),
+        endTime: slotInfo?.endTime && timeObjToStr(slotInfo.endTime),
       },
     });
 
-    if (res.status === 200) {
+    if (res.status === 200 || res.status === 201) {
       toast.success("Booking successful");
-      setIsOpen(false);
-      setLoading(false);
 
-      navigate(`/ticket/${res.data.bookingId}`);
+      setIsBookingSuccessfull(true);
+
+      setBookingId(res.data.bookingId);
     } else {
       toast.error("Booking failed. Please try again.");
       setLoading(false);
@@ -71,74 +80,96 @@ const PaymentModal = ({
         }}
       >
         <div
-          className="flex flex-col items-center justify-center space-y-3 mt-4 bg-white lg:w-[50%] w-[90%] py-6 lg:py-12 px-6 rounded-lg"
+          className="flex flex-col items-center justify-center space-y-3 bg-white lg:w-[50%] w-[90%] py-6 lg:py-12 px-6 rounded-lg"
           onClick={(e) => {
             e.stopPropagation();
           }}
         >
+          {isBookingSuccessfull ? (
+            <div>
+              <Lottie
+                animationData={paymentSuccessfullAnim}
+                className="w-[350px]"
+                loop={false}
+                autoPlay={true}
+                onComplete={() => {
+                  setIsOpen(false);
+                  setLoading(false);
 
-          <h1 className="font-bold">Pay ₹{amount}</h1>
-          <img src={qrCode} width={innerWidth < 1024 ? 80 : 130} className="object-contain" />
+                  navigate(`/ticket/${bookingId}`);
+                }}
+              />
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center space-y-3  mt-4 w-full">
+              <h1 className="font-bold">Pay ₹{amount}</h1>
+              <img
+                src={qrCode}
+                width={innerWidth < 1024 ? 80 : 130}
+                className="object-contain"
+              />
 
-          <p className="text-[8px] text-neutral-400 text-center">
-            * After paying the amount, fill the transaction ID and click on the
-            Book Now button to book the show*
-          </p>
+              <p className="text-[8px] text-neutral-400 text-center">
+                * After paying the amount, fill the transaction ID and click on
+                the Book Now button to book the show*
+              </p>
 
-          <input
-            type="text"
-            placeholder="Full Name"
-            required
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
-            className="w-full border-b border-neutral-400 text-xs lg:text-sm pb-3 outline-none mt-4"
-          />
+              <input
+                type="text"
+                placeholder="Full Name"
+                required
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+                className="w-full border-b border-neutral-400 text-xs lg:text-sm pb-3 outline-none mt-4"
+              />
 
-          <input
-            type="text"
-            placeholder="Phone Number"
-            required
-            value={phoneNumber}
-            onChange={(e) => {
-              setPhoneNumber(e.target.value);
-            }}
-            className="w-full border-b border-neutral-400 text-xs lg:text-sm pb-3 outline-none mt-4"
-          />
+              <input
+                type="text"
+                placeholder="Phone Number"
+                required
+                value={phoneNumber}
+                onChange={(e) => {
+                  setPhoneNumber(e.target.value);
+                }}
+                className="w-full border-b border-neutral-400 text-xs lg:text-sm pb-3 outline-none mt-4"
+              />
 
-          <input
-            type="email"
-            placeholder="Email"
-            required
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            className="w-full border-b border-neutral-400 text-xs lg:text-sm pb-3 outline-none mt-4"
-          />
+              <input
+                type="email"
+                placeholder="Email"
+                required
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                className="w-full border-b border-neutral-400 text-xs lg:text-sm pb-3 outline-none mt-4"
+              />
 
-          <input
-            type="text"
-            placeholder="Transaction ID"
-            required
-            value={transactionId}
-            onChange={(e) => {
-              setTransactionId(e.target.value);
-            }}
-            className="w-full border-b border-neutral-400 text-xs lg:text-sm pb-3 outline-none mt-4"
-          />
+              <input
+                type="text"
+                placeholder="Transaction ID"
+                required
+                value={transactionId}
+                onChange={(e) => {
+                  setTransactionId(e.target.value);
+                }}
+                className="w-full border-b border-neutral-400 text-xs lg:text-sm pb-3 outline-none mt-4"
+              />
 
-          <button
-            className={`w-fit px-10 py-2 text-xs lg:text-sm mt-10 text-center rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200 ${
-              transactionId && name && email && phoneNumber
-                ? "brightness-100"
-                : "brightness-50"
-            }`}
-            onClick={handleBooking}
-          >
-            {loading ? <Loading /> : "Book Now"}
-          </button>
+              <button
+                className={`w-fit px-10 py-2 text-xs lg:text-sm mt-10 text-center rounded-lg bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200 cursor-pointer ${
+                  transactionId && name && email && phoneNumber
+                    ? "brightness-100"
+                    : "brightness-50"
+                }`}
+                onClick={handleBooking}
+              >
+                {loading ? "Booking..." : "Book Now"}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );

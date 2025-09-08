@@ -5,6 +5,7 @@ import type { Movie } from "../types/movie.type";
 import MovieCard from "../components/MovieCard";
 import { toast } from "react-hot-toast";
 import { downloadTicketAsImage } from "../util/ticket.util";
+import userApi from "../apis/userApi";
 
 const TicketPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,51 +22,6 @@ const TicketPage = () => {
       try {
         setLoading(true);
 
-        // Demo booking data
-        const demoBooking: Booking = {
-          _id: id || "demo-booking-123",
-          transactionId:
-            "TXN-" + Math.random().toString(36).substr(2, 9).toUpperCase(),
-          movieIds: ["8587", "209112"],
-          userId: "user-123",
-          auditorium: 3,
-          date: "2025-08-25",
-          noOfPersons: 2,
-          location: "Sadar Bazar, Agra",
-          amountPaid: 850,
-          slot: {
-            startTime: "10 AM",
-            endTime: "12 PM",
-          },
-        };
-
-        // Demo movies data
-        const demoMovies: Movie[] = [
-          {
-            id: 8587,
-            title: "The Lion King",
-            duration: "1h 58m",
-            poster_url:
-              "https://image.tmdb.org/t/p/w500/sKCr78MXSLixwmZ8DyJLrpMsd15.jpg",
-            state: "NOW_SHOWING",
-          },
-          {
-            id: 209112,
-            title: "Barbie",
-            duration: "1h 54m",
-            poster_url:
-              "https://image.tmdb.org/t/p/w500/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg",
-            state: "NOW_SHOWING",
-          },
-        ];
-
-        setBooking(demoBooking);
-        setMovies(demoMovies);
-        setUserName("John Doe");
-        setUserEmail("john.doe@example.com");
-
-        // Uncomment below to use real API calls
-        /*
         const bookingData = await userApi.get(`/booking/${id}`);
         setBooking(bookingData.data.data);
 
@@ -78,10 +34,8 @@ const TicketPage = () => {
         const moviesData = await Promise.all(moviePromises);
         setMovies(moviesData.flat());
 
-        // Fetch user data - replace with actual user API call
         setUserName("John Doe");
         setUserEmail("john.doe@example.com");
-        */
       } catch (error) {
         toast.error("Failed to load ticket details");
       } finally {

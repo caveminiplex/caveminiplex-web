@@ -12,6 +12,7 @@ import { formatDate } from "../../util/date.util";
 import type { AvailableSlotType } from "../../types/booking.type";
 import { isTimeAvailable, isAudiAvailableFromTime } from "../../util/slot.util";
 import { toast } from "react-hot-toast";
+import { useLocation } from "../../contexts/LocationContext";
 
 export type DateType = {
   month: string;
@@ -115,7 +116,12 @@ const PickingSection = ({
     day: DAYS[new Date().getDay()],
   });
 
-  const [selectedAudi, setSelectedAudi] = useState<number | null>(null);
+  const { setSelectedLocation } = useLocation();
+
+  const [selectedAudi, setSelectedAudi] = useState<{
+    audiNo: number,
+    location: string
+  } | null>(null);
 
   const [noOfPersons, setNoOfPerons] = useState<string>("2");
   const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
@@ -124,6 +130,8 @@ const PickingSection = ({
     min: 0,
     type: "AM",
   });
+
+
   const [availableSlots, setAvailableSlots] = useState<{
     location:string,
     auditoriums:AvailableSlotType[]
@@ -147,22 +155,29 @@ const PickingSection = ({
     }
   };
 
-  const selectAudi = (audino: number) => {
-    if (selectedAudi != audino) {
-      setSelectedAudi(audino);
+  const selectAudi = (audino: number, location: string) => {
+
+    setSelectedLocation(location);
+
+    if (selectedAudi?.audiNo != audino || selectedAudi?.location != location) {
+      setSelectedAudi({
+        audiNo: audino,
+        location: location
+      });
     }
   };
 
   useEffect(() => {
     setSlotInfo({
       date: selectedDate,
-      audi: selectedAudi,
+      audi: selectedAudi?.audiNo!,
       noOfPerons: parseInt(noOfPersons),
       startTime: startTime,
-      endTime: startTime ? addTimes(startTime, totalTime) : null,
+      endTime: (startTime && totalTime && totalTime != "0h 0m") ? addTimes(startTime, totalTime) : null,
       own_duration: selectedDuration,
     });
-  }, [selectedDate, selectedAudi, startTime, noOfPersons, selectedDuration]);
+
+  }, [selectedDate, selectedAudi, startTime, noOfPersons, selectedDuration, totalTime]);
 
   useEffect(() => {
     setSelectedAudi(null);
@@ -309,16 +324,15 @@ const PickingSection = ({
                     <div
                       onClick={() => {
                         if (!isAudiAvailableFromTime(slot.auditoriums, audi.auditorium, startTime)) {
-                          console.log("not available");
                           toast.error(
                             `No Slots Available in Audi ${audi.auditorium}`
                           );
                           return;
                         }
-                        selectAudi(audi.auditorium);
+                        selectAudi(audi.auditorium, slot.location);
                       }}
                       className={`px-4 lg:px-5 py-2 lg:py-2 text-[10px] lg:text-sm  ${
-                        audi.auditorium == selectedAudi
+                        audi.auditorium == selectedAudi?.audiNo && slot.location == selectedAudi?.location
                           ? "bg-blue-600 text-white"
                           : isAudiAvailableFromTime(slot.auditoriums, audi.auditorium, startTime)
                           ? "bg-green-300"
