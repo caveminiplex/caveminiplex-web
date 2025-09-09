@@ -134,8 +134,12 @@ const Home = () => {
                 Book now
               </button>
 
-              <button className="px-8 lg:px-14 py-2 text-sm lg:text-base rounded-lg border-2 border-white md:border-black text-white md:text-black font-medium hover:shadow-xl transition duration-200 cursor-pointer">
-                View Movies
+              <button onClick={() => {
+                  navigate("/browse");
+                }} 
+
+                className="px-8 lg:px-14 py-2 text-sm lg:text-base rounded-lg border-2 border-white md:border-black text-white md:text-black font-medium hover:shadow-xl transition duration-200 cursor-pointer">
+                Browse Movies
               </button>
             </div>
           </div>
