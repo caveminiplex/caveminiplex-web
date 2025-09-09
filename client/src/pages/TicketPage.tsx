@@ -7,6 +7,44 @@ import { toast } from "react-hot-toast";
 import { downloadTicketAsImage } from "../util/ticket.util";
 import userApi from "../apis/userApi";
 
+const useCardDimensions = () => {
+  const [dimensions, setDimensions] = useState(() => {
+    if (typeof window === "undefined")
+      return { width: "140px", height: "200px" };
+
+    if (window.innerWidth >= 768) {
+      return { width: "180px", height: "260px" };
+    } else if (window.innerWidth >= 640) {
+      return { width: "160px", height: "240px" };
+    } else {
+      return { width: "140px", height: "200px" };
+    }
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setDimensions({ width: "180px", height: "260px" });
+      } else if (window.innerWidth >= 640) {
+        setDimensions({ width: "160px", height: "240px" });
+      } else {
+        setDimensions({ width: "140px", height: "200px" });
+      }
+    };
+
+    // Set initial dimensions
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return dimensions;
+};
+
 const TicketPage = () => {
   const { id } = useParams<{ id: string }>();
   const [booking, setBooking] = useState<Booking | null>(null);
@@ -14,6 +52,7 @@ const TicketPage = () => {
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string>("");
+  const { width, height } = useCardDimensions();
 
   useEffect(() => {
     const fetchBookingData = async () => {
@@ -26,10 +65,12 @@ const TicketPage = () => {
         setBooking(bookingData.data.data);
 
         // Fetch movies data for each movieId
-        const moviePromises = bookingData.data.data.movieIds.map(async (movieId: string) => {
-          const response = await userApi.get(`/movie/${movieId}`);
-          return response.data.data;
-        });
+        const moviePromises = bookingData.data.data.movieIds.map(
+          async (movieId: string) => {
+            const response = await userApi.get(`/movie/${movieId}`);
+            return response.data.data;
+          }
+        );
 
         const moviesData = await Promise.all(moviePromises);
         setMovies(moviesData.flat());
@@ -77,34 +118,34 @@ const TicketPage = () => {
   }
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-8">
+    <div className="w-full h-full overflow-y-scroll custom-scrollbar bg-gradient-to-br from-purple-50 to-blue-50 p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8 flex justify-between">
-          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-500 to-blue-600 mb-2">
+        <div className="text-center mb-6 sm:mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <h1 className="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-500 to-blue-600">
             Your Ticket
           </h1>
-          <p className="text-neutral-500 text-sm">
+          <p className="text-xs sm:text-sm text-neutral-500 bg-white/50 px-3 py-1 rounded-full">
             Transaction ID: {booking.transactionId}
           </p>
         </div>
 
         {/* Main Content */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl overflow-hidden">
           <div className="flex flex-col lg:flex-row">
             {/* Left Side - Movie Cards */}
-            <div className="lg:w-1/2 p-8 bg-gradient-to-br from-fuchsia-50 to-blue-50">
-              <h2 className="text-2xl font-bold text-neutral-800 mb-6">
+            <div className="lg:w-1/2 p-4 sm:p-6 md:p-8 bg-gradient-to-br from-fuchsia-50 to-blue-50">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-800 mb-4 sm:mb-6">
                 {movies.length > 1 ? "Movies" : "Movie"}
               </h2>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4">
                 {movies.map((movie, index) => (
                   <div key={index} className="flex-shrink-0">
                     <MovieCard
                       movieInfo={movie}
-                      width="180px"
-                      height="260px"
-                      titleSize="0.9rem"
+                      width={width}
+                      height={height}
+                      titleSize="0.8rem"
                     />
                   </div>
                 ))}
@@ -112,26 +153,26 @@ const TicketPage = () => {
             </div>
 
             {/* Right Side - Booking Details */}
-            <div className="lg:w-1/2 p-8">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex flex-col">
-                  <h2 className="text-xl font-bold text-neutral-800">
+            <div className="lg:w-1/2 p-4 sm:p-6 md:p-8">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-lg sm:text-xl font-bold text-neutral-800 truncate">
                     Booking Details
                   </h2>
-                  <p className="text-sm text-neutral-500">
-                    Booking ID: {booking._id}
+                  <p className="text-xs sm:text-sm text-neutral-500 truncate">
+                    ID: {booking._id}
                   </p>
                 </div>
 
                 <button
                   onClick={handleDownloadTicket}
-                  className="w-fit px-6 py-2 text-sm rounded-lg text-white font-semibold bg-gradient-to-r from-fuchsia-500 to-blue-600 hover:from-fuchsia-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer"
+                  className="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm rounded-lg text-white font-semibold bg-gradient-to-r from-fuchsia-500 to-blue-600 hover:from-fuchsia-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer"
                 >
                   Download Ticket
                 </button>
               </div>
 
-              <div className="space-y-6 overflow-y-scroll h-[400px] custom-scrollbar-thin px-2">
+              <div className="space-y-4 sm:space-y-6 h-fit px-1 sm:px-2">
                 {/* Movie Names */}
                 <div>
                   <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-2">
@@ -169,27 +210,32 @@ const TicketPage = () => {
                     </p>
                   </div>
                 </div>
-                    {/* Note Section */}
-                    <div className="w-full rounded-lg border border-neutral-200 p-2">
-                        <p className="text-xs text-neutral-500">
-                            Note: Please come before 15 minutes of the showtime. And if you are late, or show time is over, then it is not our responsibility and the ticket will not be refunded.
-                        </p>
-                    </div>
+                {/* Note Section */}
+                <div className="w-full rounded-lg border border-neutral-200 p-3 bg-neutral-50">
+                  <p className="text-xs text-neutral-500 leading-relaxed">
+                    <span className="font-semibold text-neutral-700">
+                      Note:
+                    </span>{" "}
+                    Please arrive 15 minutes before showtime. Latecomers may not
+                    be admitted, and tickets are non-refundable for missed
+                    screenings.
+                  </p>
+                </div>
 
                 {/* Date & Time */}
                 <div>
-                  <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-2">
+                  <h3 className="text-xs sm:text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-1 sm:mb-2">
                     Date & Time
                   </h3>
-                  <p className="text-lg text-neutral-800 font-medium">
+                  <p className="text-base sm:text-lg text-neutral-800 font-medium">
                     {new Date(booking.date).toLocaleDateString("en-US", {
-                      weekday: "long",
+                      weekday: "short",
                       year: "numeric",
-                      month: "long",
+                      month: "short",
                       day: "numeric",
                     })}
                   </p>
-                  <p className="text-lg text-neutral-600">
+                  <p className="text-base sm:text-lg text-neutral-600">
                     {booking.slot.startTime} - {booking.slot.endTime}
                   </p>
                 </div>
@@ -216,13 +262,15 @@ const TicketPage = () => {
 
                 {/* User Details */}
                 <div>
-                  <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-2">
+                  <h3 className="text-xs sm:text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-1 sm:mb-2">
                     Customer Details
                   </h3>
-                  <p className="text-lg text-neutral-800 font-medium">
+                  <p className="text-base sm:text-lg text-neutral-800 font-medium">
                     {userName}
                   </p>
-                  <p className="text-neutral-600">{userEmail}</p>
+                  <p className="text-sm sm:text-base text-neutral-600 break-all">
+                    {userEmail}
+                  </p>
                 </div>
               </div>
             </div>
