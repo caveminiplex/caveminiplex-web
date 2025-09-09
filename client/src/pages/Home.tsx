@@ -16,14 +16,17 @@ const Slideshow = () => {
     {
       url: "https://musewithmeblog.com/wp-content/uploads/2018/05/infinitywarfeatured.jpg",
       title: "Avengers: Infinity War",
+      position: "left",
     },
     {
       url: "https://i0.wp.com/conciliarpost.com/wp-content/uploads/2014/09/breaking_bad_fb_banner_by_cartoonperson-d5628z3.png?fit=851%2C314&ssl=1",
       title: "Breaking Bad",
+      position: "right",
     },
     {
       url: "https://w0.peakpx.com/wallpaper/380/356/HD-wallpaper-pk-movie-motion-poster.jpg",
       title: "PK",
+      position: "left",
     },
   ];
 
@@ -34,10 +37,10 @@ const Slideshow = () => {
           <div key={index} className="relative">
             <div
               style={{ backgroundImage: `url(${slide.url})` }}
-              className="flex items-center justify-center bg-cover h-[500px] brightness-[55%]"
+              className={`bg-cover w-full  h-[500px] brightness-[55%] ${slide.position && `bg-${slide.position}`}`}
             ></div>
 
-            <div className="absolute bottom-4 right-4 z-20 px-11 py-8">
+            <div className="absolute bottom-4 right-4 z-20 px-11 py-8 hidden md:block">
               <h3 className="text-7xl text-white font-bold">{slide.title}</h3>
             </div>
           </div>
@@ -128,9 +131,9 @@ const Home = () => {
 
       {movies.currentMovies.length > 0 && (
         <section className="w-full px-4 md:px-6 py-10">
-          <h2 className="text-lg md:text-2xl font-medium">Currently Showing</h2>
+          <h2 className="text-lg md:text-2xl font-medium text-center md:text-left">Currently Showing</h2>
 
-          <div className="pt-4 md:pt-8 pb-3 w-full flex items-center md:gap-6 gap-4 flex-wrap">
+          <div className="pt-4 md:pt-8 pb-3 w-full flex items-center justify-center md:justify-start  md:gap-6 gap-4 flex-wrap">
             {movies.currentMovies.map((movie) => (
               <div
                 key={movie.id}
