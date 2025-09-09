@@ -16,18 +16,31 @@ const Slideshow = () => {
     {
       url: "https://musewithmeblog.com/wp-content/uploads/2018/05/infinitywarfeatured.jpg",
       title: "Avengers: Infinity War",
-      position: "left",
+      position: "top-left",
     },
     {
-      url: "https://i0.wp.com/conciliarpost.com/wp-content/uploads/2014/09/breaking_bad_fb_banner_by_cartoonperson-d5628z3.png?fit=851%2C314&ssl=1",
-      title: "Breaking Bad",
-      position: "right",
+      url: "https://www.bollywoodhungama.com/wp-content/uploads/2018/04/Kabir-Singh.jpg",
+      title: "Kabir Singh",
+      position: "top-center",
+    },
+    {
+      url:"https://i.ytimg.com/vi/sL35JEzGcRc/maxresdefault.jpg",
+      title:"Bramayugam",
+      position:"bottom-center"
     },
     {
       url: "https://w0.peakpx.com/wallpaper/380/356/HD-wallpaper-pk-movie-motion-poster.jpg",
       title: "PK",
-      position: "left",
+      position: "top-left",
     },
+
+    {
+      url: "https://static0.colliderimages.com/wordpress/wp-content/uploads/2022/11/avatar-the-way-of-water-poster.jpg",
+      title: "Avatar: The Way of Water",
+      position: "top-right",
+    },
+
+   
   ];
 
   return (
@@ -105,9 +118,9 @@ const Home = () => {
       <div className="relative h-[500px] w-full">
         <Slideshow />
 
-        <div className="w-[70%] md:w-[50%] lg:w-[40%] h-full bg-gradient-to-r from-[#ffffffe4] from-30% to-transparent z-10 absolute top-0 left-0 p-5 flex items-center backdrop-blur-xs">
+        <div className="w-[100%] md:w-[50%] lg:w-[40%] h-full md:bg-gradient-to-r md:from-[#ffffffe4] md:from-30% md:to-transparent z-10 absolute top-0 left-0 p-5 flex items-center backdrop-blur-[1px] md:backdrop-blur-xs">
           <div className=" flex flex-col items-start space-y-14">
-            <p className="text-4xl md:text-5xl font-medium leading-snug">
+            <p className="text-4xl md:text-5xl font-medium leading-snug text-center md:text-left text-white md:text-black">
               Watch movies of your choice with the close one's 🍿🎬
             </p>
 
@@ -121,7 +134,7 @@ const Home = () => {
                 Book now
               </button>
 
-              <button className="px-8 lg:px-14 py-2 text-sm lg:text-base rounded-lg border-2 border-black text-black font-medium hover:shadow-xl transition duration-200 cursor-pointer">
+              <button className="px-8 lg:px-14 py-2 text-sm lg:text-base rounded-lg border-2 border-white md:border-black text-white md:text-black font-medium hover:shadow-xl transition duration-200 cursor-pointer">
                 View Movies
               </button>
             </div>
