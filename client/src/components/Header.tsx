@@ -6,7 +6,7 @@ import { useState } from "react";
 const Header = () => {
   const navigate = useNavigate();
   const { selectedLocation, setSelectedLocation } = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(true);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   return (
     <header className="flex flex-col bg-white relative">
@@ -33,6 +33,14 @@ const Header = () => {
         {/* Right portion */}
 
         <div className="md:hidden flex items-center space-x-5">
+          <button
+            onClick={() => {
+              navigate("/login");
+            }}
+            className="px-6 py-1 text-xs  rounded-sm bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white"
+          >
+            Login
+          </button>
           {isMenuOpen ? (
             <IoIosArrowDropup
               className="text-2xl"
@@ -88,7 +96,7 @@ const Header = () => {
       </div>
 
       <div
-        className={`w-full md:hidden bg-white absolute top-[50px] left-0 right-0 z-20 ${
+        className={`w-full md:hidden bg-white absolute top-[50px] left-0 right-0 z-30 ${
           isMenuOpen ? "h-fit" : "h-0"
         } transition-all duration-500 border-t border-t-neutral-200 overflow-hidden`}
       >

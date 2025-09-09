@@ -119,8 +119,8 @@ const PickingSection = ({
   const { setSelectedLocation } = useLocation();
 
   const [selectedAudi, setSelectedAudi] = useState<{
-    audiNo: number,
-    location: string
+    audiNo: number;
+    location: string;
   } | null>(null);
 
   const [noOfPersons, setNoOfPerons] = useState<string>("2");
@@ -131,11 +131,12 @@ const PickingSection = ({
     type: "AM",
   });
 
-
-  const [availableSlots, setAvailableSlots] = useState<{
-    location:string,
-    auditoriums:AvailableSlotType[]
-  }[]>([]);
+  const [availableSlots, setAvailableSlots] = useState<
+    {
+      location: string;
+      auditoriums: AvailableSlotType[];
+    }[]
+  >([]);
 
   const fetchAvailableSlots = async () => {
     const formattedDate = formatDate(selectedDate);
@@ -156,13 +157,12 @@ const PickingSection = ({
   };
 
   const selectAudi = (audino: number, location: string) => {
-
     setSelectedLocation(location);
 
     if (selectedAudi?.audiNo != audino || selectedAudi?.location != location) {
       setSelectedAudi({
         audiNo: audino,
-        location: location
+        location: location,
       });
     }
   };
@@ -173,11 +173,20 @@ const PickingSection = ({
       audi: selectedAudi?.audiNo!,
       noOfPerons: parseInt(noOfPersons),
       startTime: startTime,
-      endTime: (startTime && totalTime && totalTime != "0h 0m") ? addTimes(startTime, totalTime) : null,
+      endTime:
+        startTime && totalTime && totalTime != "0h 0m"
+          ? addTimes(startTime, totalTime)
+          : null,
       own_duration: selectedDuration,
     });
-
-  }, [selectedDate, selectedAudi, startTime, noOfPersons, selectedDuration, totalTime]);
+  }, [
+    selectedDate,
+    selectedAudi,
+    startTime,
+    noOfPersons,
+    selectedDuration,
+    totalTime,
+  ]);
 
   useEffect(() => {
     setSelectedAudi(null);
@@ -190,9 +199,9 @@ const PickingSection = ({
   }, [selectedDate, startTime]);
 
   return (
-    <div className="w-full h-full lg:pr-4 lg:border-r lg:border-neutral-300 relative">
+    <div className="w-full h-full lg:pr-4 lg:border-r lg:border-neutral-300 relative overflow-y-auto custom-scrollbar-thin">
       {/* Dates */}
-      <div className="overflow-x-scroll custom-scrollbar-thin  pb-1 lg:pb-2">
+      <div className="overflow-x-scroll custom-scrollbar-thin  pb-2">
         <div className="flex items-center space-x-4">
           {getUpcomingDays(10).map((upcoming, index) => (
             <div
@@ -271,14 +280,14 @@ const PickingSection = ({
           type="text"
           value={noOfPersons}
           onChange={(e) => {
-            if(e.target.value == ""){
+            if (e.target.value == "") {
               setNoOfPerons("");
               return;
             }
 
             const value = parseInt(e.target.value);
 
-            if (value > 0 && value <= 5 ) setNoOfPerons(e.target.value);
+            if (value > 0 && value <= 5) setNoOfPerons(e.target.value);
           }}
           className="text-center border-b border-neutral-600 outline-none w-[20%] lg:w-[30%] text-sm lg:text-base"
         />
@@ -314,39 +323,51 @@ const PickingSection = ({
         <h3 className="text-sm lg:text-base font-bold">Choose an auditorium</h3>
 
         <div className="flex flex-col items-center justify-center space-y-3 lg:space-y-5">
-          {availableSlots.map(
-            (slot, index) => (
-              <div key={index} className="flex flex-col items-center justify-center space-y-4">
-                <p className="text-sm text-gray-500">{slot.location}</p>
+          {availableSlots.map((slot, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center justify-center space-y-4"
+            >
+              <p className="text-sm text-gray-500">{slot.location}</p>
 
-                <div className="flex items-center justify-center space-x-3 flex-wrap">
-                  {slot.auditoriums.map((audi) => (
-                    <div
-                      onClick={() => {
-                        if (!isAudiAvailableFromTime(slot.auditoriums, audi.auditorium, startTime)) {
-                          toast.error(
-                            `No Slots Available in Audi ${audi.auditorium}`
-                          );
-                          return;
-                        }
-                        selectAudi(audi.auditorium, slot.location);
-                      }}
-                      className={`px-4 lg:px-5 py-2 lg:py-2 text-[10px] lg:text-sm  ${
-                        audi.auditorium == selectedAudi?.audiNo && slot.location == selectedAudi?.location
-                          ? "bg-blue-600 text-white"
-                          : isAudiAvailableFromTime(slot.auditoriums, audi.auditorium, startTime)
-                          ? "bg-green-300"
-                          : "bg-red-400"
-                      } rounded-sm lg:rounded-lg shadow-2xs transition-all hover:scale-105 cursor-pointer`}
-                      key={audi.auditorium}
-                    >
-                      Audi {audi.auditorium}
-                    </div>
-                  ))}
-                </div>
+              <div className="flex items-center justify-center space-x-3 flex-wrap">
+                {slot.auditoriums.map((audi) => (
+                  <div
+                    onClick={() => {
+                      if (
+                        !isAudiAvailableFromTime(
+                          slot.auditoriums,
+                          audi.auditorium,
+                          startTime
+                        )
+                      ) {
+                        toast.error(
+                          `No Slots Available in Audi ${audi.auditorium}`
+                        );
+                        return;
+                      }
+                      selectAudi(audi.auditorium, slot.location);
+                    }}
+                    className={`px-4 lg:px-5 py-2 lg:py-2 text-[10px] lg:text-sm  ${
+                      audi.auditorium == selectedAudi?.audiNo &&
+                      slot.location == selectedAudi?.location
+                        ? "bg-blue-600 text-white"
+                        : isAudiAvailableFromTime(
+                            slot.auditoriums,
+                            audi.auditorium,
+                            startTime
+                          )
+                        ? "bg-green-300"
+                        : "bg-red-400"
+                    } rounded-sm lg:rounded-lg shadow-2xs transition-all hover:scale-105 cursor-pointer`}
+                    key={audi.auditorium}
+                  >
+                    Audi {audi.auditorium}
+                  </div>
+                ))}
               </div>
-            )
-          )}
+            </div>
+          ))}
         </div>
       </div>
 

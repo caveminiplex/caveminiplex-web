@@ -293,7 +293,7 @@ const Home = () => {
             onClick={() => {
               navigate("/browse");
             }}
-            className="mt-10 px-7 md:px-10 py-3 md:py-4 lg:px-14 lg:py-6  rounded-lg  bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white text-xs lg:text-xl font-bold hover:bg-yellow-300 transition cursor-pointer"
+            className="mt-10 px-7 md:px-10 py-3 lg:px-14  rounded-lg  bg-gradient-to-b from-fuchsia-500 to-blue-600 text-white text-xs lg:text-lg font-bold hover:bg-yellow-300 transition cursor-pointer"
           >
             Select Your Movie Now
           </button>

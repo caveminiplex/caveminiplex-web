@@ -5,6 +5,7 @@ import { calculateTotalTime } from "../../util/time.util";
 import { useNavigate } from "react-router-dom";
 import { fetchMovies } from "../../pages/Home";
 import SongCard from "../SongCard";
+import { IoAddOutline } from "react-icons/io5";
 
 const MoviesListing = ({
   selectedMovies,
@@ -81,7 +82,9 @@ const MoviesListing = ({
           <p className="text-center text-neutral-600">No movies found</p>
         </div>
       ) : (
-        <div className={` h-full flex items-center lg:grid lg:grid-cols-2 gap-5 relative`}>
+        <div
+          className={` h-full flex items-center lg:grid lg:grid-cols-2 gap-5 relative`}
+        >
           {ownDuration === "1h" ? (
             <div
               className={`w-fit h-fit relative`}
@@ -109,37 +112,57 @@ const MoviesListing = ({
               <SongCard width="150px" height="200px" />
             </div>
           ) : (
-            currentMovies.map((movie) => (
+            <>
+              {/* browse movies button for mobile */}
               <div
-                className={`w-fit h-fit relative`}
-                key={movie.id}
+                className={`w-fit h-fit md:hidden ml-2`}
+                key={-1}
                 onClick={() => {
-                  if (ownDuration == "1h") return;
-
-                  if (!ownDuration) selectMovie(movie);
-                  else {
-                    setSelectedMovies([movie]);
-                  }
+                  navigate("/browse");
                 }}
               >
-                <div className="absolute top-2 right-2 z-20">
-                  <div
-                    className={`w-[10px] h-[10px] lg:w-[15px] lg:h-[15px] rounded-full border border-neutral-800 ${
-                      selectedMovies.map((movie) => movie.id).includes(movie.id)
-                        ? "bg-blue-600"
-                        : "bg-white"
-                    }`}
-                  ></div>
+                <div className="w-[90px] h-[120px] border border-fuchsia-500 rounded-lg border-dashed flex flex-col items-center justify-center space-y-3">
+                  <IoAddOutline className="text-2xl text-neutral-600" />
+                  <p className="text-center text-neutral-600 text-[10px]">
+                    Add movie
+                  </p>
                 </div>
-                <MovieCard
-                  width={innerWidth < 1024 ? "90px" : "150px"}
-                  height={innerWidth < 1024 ? "120px" : "200px"}
-                  titleSize={innerWidth < 1024 ? "0.4rem" : "0.7rem"}
-                  movieInfo={movie}
-                  setCurrentMovies={setCurrentMovies}
-                />
               </div>
-            ))
+
+              {currentMovies.map((movie) => (
+                <div
+                  className={`w-fit h-fit relative`}
+                  key={movie.id}
+                  onClick={() => {
+                    if (ownDuration == "1h") return;
+
+                    if (!ownDuration) selectMovie(movie);
+                    else {
+                      setSelectedMovies([movie]);
+                    }
+                  }}
+                >
+                  <div className="absolute top-2 right-2 z-20">
+                    <div
+                      className={`w-[10px] h-[10px] lg:w-[15px] lg:h-[15px] rounded-full border border-neutral-800 ${
+                        selectedMovies
+                          .map((movie) => movie.id)
+                          .includes(movie.id)
+                          ? "bg-blue-600"
+                          : "bg-white"
+                      }`}
+                    ></div>
+                  </div>
+                  <MovieCard
+                    width={innerWidth < 1024 ? "90px" : "150px"}
+                    height={innerWidth < 1024 ? "120px" : "200px"}
+                    titleSize={innerWidth < 1024 ? "0.4rem" : "0.7rem"}
+                    movieInfo={movie}
+                    setCurrentMovies={setCurrentMovies}
+                  />
+                </div>
+              ))}
+            </>
           )}
         </div>
       )}
