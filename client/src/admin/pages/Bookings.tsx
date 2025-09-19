@@ -22,10 +22,6 @@ const Bookings = () => {
     }
   };
 
-  const bookTicket = async () => {
-
-  }
-
   useEffect(() => {
     fetchBookings();
   }, []);
@@ -33,7 +29,7 @@ const Bookings = () => {
   return (
 
     <>
-    <AddBookingModal isOpen={isBookingModalOpen} setIsOpen={setIsBookingModalOpen} actionFunc={bookTicket}/>
+    <AddBookingModal isOpen={isBookingModalOpen} setIsOpen={setIsBookingModalOpen}/>
 
     <div className="w-full h-full">
       <div className="flex items-center justify-between">
@@ -70,11 +66,11 @@ const Bookings = () => {
           </thead>
 
           <tbody>
-            {bookings.filter(booking => booking.location === filterLocation).map((booking) => (
+            {bookings.filter(booking => booking.location === filterLocation).reverse().map((booking) => (
               <tr className="[&>td]:border [&>td]:border-neutral-400 [&>td]:py-5 [&>td]:text-center">
                 <td>{booking._id}</td>
                 <td>Ronak</td>
-                <td>Avengers: Endgame, Breaking Bad</td>
+                <td>{booking.movieIds.join(", ")}</td>
                 <td>
                   Audi {booking.auditorium},{booking.date},{" "}
                   {booking.slot.startTime} to {booking.slot.endTime}

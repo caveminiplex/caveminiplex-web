@@ -48,7 +48,7 @@ export const isTimeAvailable = (
         const slotEndTimeInMinutes = timeToMinutes(slot.endTime);
         return (
           selectedTimeInMinutes >= slotStartTimeInMinutes &&
-          selectedTimeInMinutes < slotEndTimeInMinutes
+          selectedTimeInMinutes <= slotEndTimeInMinutes
         );
       })
     )
